@@ -38,7 +38,6 @@ public class Login implements Comparable<Login> {
 	}
 
 	// Implementing compareTo to compare by username
-	@Override
 	public int compareTo(Login other) {
 		return this.username.compareTo(other.username);
 	}

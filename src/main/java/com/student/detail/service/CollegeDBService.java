@@ -13,7 +13,6 @@ import com.student.detail.util.DBUtil;
 
 public class CollegeDBService implements CollegeService {
 
-	@Override
 	public College addCollege(College college) {
 		Connection con = null;
 		Statement stmt = null;

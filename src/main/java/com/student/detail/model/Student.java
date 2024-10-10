@@ -145,7 +145,6 @@ public class Student implements Comparable<Student> {
 		this.image = image;
 	}
 
-	@Override
 	public int compareTo(Student other) {
 		return this.firstname.compareTo(other.firstname);
 	}

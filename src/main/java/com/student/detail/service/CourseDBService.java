@@ -13,7 +13,6 @@ import com.student.detail.util.DBUtil;
 
 public class CourseDBService implements CourseService {
 
-	@Override
 	public Course addCourse(Course course) {
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -54,7 +53,6 @@ public class CourseDBService implements CourseService {
 		}
 	}
 
-	@Override
 	public Course updateCourse(Course course) throws CourseNotFoundException {
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -95,7 +93,6 @@ public class CourseDBService implements CourseService {
 		}
 	}
 
-	@Override
 	public boolean deleteCourse(Course course) {
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -124,7 +121,6 @@ public class CourseDBService implements CourseService {
 		}
 	}
 
-	@Override
 	public List<Course> getAllCourses() {
 		Connection con = null;
 		PreparedStatement ps = null;
