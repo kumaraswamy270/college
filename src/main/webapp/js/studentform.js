@@ -1,8 +1,6 @@
 document.getElementById('studentForm').addEventListener('submit', function(event) {
     clearErrors();
     let isValid = true;
-    let submitSuccess = document.getElementById('successMessage');
-    submitSuccess.textContent = '';
 
     // Existing fields validation
     let firstname = document.getElementById('firstname').value.trim();
@@ -93,17 +91,6 @@ document.getElementById('studentForm').addEventListener('submit', function(event
     // Prevent form submission if validation fails
     if (!isValid) {
         event.preventDefault(); // Prevent form submission only if validation fails
-    } else {
-        // Form is valid, allow submission and show success message
-        submitSuccess.textContent = 'Form submitted successfully!';
-        document.getElementById('successMessage').style.display = 'block';
-
-        // Optionally hide the message after 3 seconds
-        setTimeout(function() {
-            document.getElementById('successMessage').style.display = 'none';
-        }, 10000);
-
-        document.getElementById('submitButton').disabled = true;  
     }
 });
 

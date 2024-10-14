@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>College Management System</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <link rel="stylesheet" type="text/css" href="css/stylesheet.css">
 </head>
 
@@ -17,32 +19,61 @@
 		<jsp:include page="loginuser.jsp" />
 	</header>
 
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container-fluid">
+			<button id="modeToggle" class="btn btn-outline-secondary me-2">Switch
+				to Night Mode</button>
+			<a class="nav-link" href="index.jsp">Home</a>
 
-	<nav>
-		<button id="modeToggle" class="mode-toggle-button">Switch to
-			Night Mode</button>
-		<a href="index.jsp">Home</a>
-		<div class="dropdown">
-			<button class="dropbtn">Students</button>
-			<div class="dropdown-content">
-				<a href="studentform.jsp">Add Student</a> <a
-					href="GetAllStudentsServlet">View All Students</a> <a
-					href="EditServlet">Edit Student</a> <a href="DeleteStudentServlet">Delete
-					Student</a>
+			<!-- Dropdown for Students -->
+			<div class="btn-group">
+				<button type="button" class="btn btn-danger dropdown-toggle"
+					data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Students</button>
+				<div class="dropdown-menu">
+					<a class="dropdown-item" href="studentform.jsp">Add Student</a> <a
+						class="dropdown-item" href="GetAllStudentsServlet">View All
+						Students</a> <a class="dropdown-item" href="EditServlet">Edit
+						Student</a> <a class="dropdown-item" href="DeleteStudentServlet">Delete
+						Student</a>
+				</div>
 			</div>
-		</div>
-		<div class="dropdown">
-			<button class="dropbtn">Courses</button>
-			<div class="dropdown-content">
-				<a href="courseform.jsp">Course Form</a> <a href="courselist.jsp">Course
-					List</a>
+
+			<!-- Dropdown for Courses -->
+			<div class="btn-group">
+				<button type="button" class="btn btn-danger dropdown-toggle"
+					data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Courses</button>
+				<div class="dropdown-menu">
+					<a class="dropdown-item" href="courseform.jsp">Course Form</a> <a
+						class="dropdown-item" href="courselist.jsp">Course List</a>
+				</div>
 			</div>
-		</div>
-		<div class="dropdown">
-			<button class="dropbtn">Colleges</button>
-			<div class="dropdown-content">
-				<a href="collegeform.jsp">College Form</a> <a
-					href="listofcolleges.jsp">College List</a>
+
+			<!-- Dropdown for Colleges -->
+			<div class="btn-group">
+				<button type="button" class="btn btn-danger dropdown-toggle"
+					data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					Colleges</button>
+				<div class="dropdown-menu">
+					<a class="dropdown-item" href="collegeform.jsp">College Form</a> <a
+						class="dropdown-item" href="listofcolleges.jsp">College List</a>
+				</div>
 			</div>
+
+			<form class="d-flex ms-auto" role="search">
+				<input class="form-control me-2" type="search" placeholder="Search"
+					aria-label="Search">
+				<button class="btn btn-outline-success" type="submit">Search</button>
+			</form>
 		</div>
 	</nav>
+
+	<!-- Include Bootstrap JS and Popper.js -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+	<script
+		src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

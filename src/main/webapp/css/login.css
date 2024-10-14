@@ -1,98 +1,41 @@
+/* custom-styles.css */
 .custom-body {
-	font-family: Arial, sans-serif;
-	background: lightblue;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 100vh;
-	margin: 0;
+    background: lightblue;
+    font-family: Arial, sans-serif;
 }
 
-.container {
-	background-color: pink;
-	padding: 40px;
-	border-radius: 10px;
-	box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-	width: 100%;
-	max-width: 400px;
-	text-align: center;
+.bg-pink {
+    background-color: pink !important;
 }
 
 .logo {
-	width: 100px;
-	height: auto;
-	display: block;
-	margin: 0 auto 10px auto;
+    width: 100px;
+    height: auto;
 }
 
-h1 {
-	margin-bottom: 20px;
-	color: #333;
+.btn-success {
+    background-color: #4CAF50 !important;
+    border: none;
+    transition: background-color 0.3s;
 }
 
-form {
-	display: flex;
-	flex-direction: column;
-	gap: 15px;
+.btn-success:hover {
+    background-color: #45a049 !important;
 }
 
-input[type="text"], input[type="password"], input[type="submit"] {
-	padding: 10px;
-	border: 1px solid #ccc;
-	border-radius: 5px;
-}
-
-input[type="text"], input[type="password"] {
-	background-color: #f9f9f9;
-}
-
-input[type="submit"] {
-	background-color: #4CAF50;
-	color: white;
-	border: none;
-	cursor: pointer;
-	transition: background-color 0.3s;
-}
-
-input[type="submit"]:hover {
-	background-color: #45a049;
-}
-
-input[type="text"]:focus, input[type="password"]:focus {
-	outline: none;
-	border-color: #28a745; /* Green color */
-}
-
-input.error-border {
-	border-color: red;
-}
-
-.success-message {
-	background-color: #008000; /* Light green background */
-	color: #ffffff; /* White text */
-	padding: 15px; /* Padding for spacing */
-	border: 1px solid #c3e6cb; /* Optional border */
-	border-radius: 5px; /* Rounded corners */
-	margin-bottom: 20px; /* Space below the message */
-}
-
-#submitButton  {
-	padding: 10px;
-	border: none;
-	border-radius: 5px;
-	background-color: #4CAF50;
-	color: white;
-	cursor: pointer;
-	font-size: 16px;
-	transition: background-color 0.3s ease;
-}
-
-#submitButton:hover {
-	background-color: #45a049;
+.form-control:focus {
+    border-color: #28a745;
+    box-shadow: none;
 }
 
 .error {
-	background-color: #ff8080;
-	color: red;
-	font-size: 14px;
+    background-color: #ff8080;
+    color: red;
+    font-size: 14px;
+}
+
+.success-message {
+    background-color: #008000;
+    color: #ffffff;
+    border: 1px solid #c3e6cb;
 }

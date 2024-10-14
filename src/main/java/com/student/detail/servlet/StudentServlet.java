@@ -68,16 +68,19 @@ public class StudentServlet extends HttpServlet {
 			// Check for duplicate roll number
 			try {
 				if (studentService.findStudentByRollnumber(rollnumber) != null) {
+					// Roll number already exists
 					request.setAttribute("databaseError",
 							"Roll number already exists. Please use a different roll number.");
 					request.getRequestDispatcher("studentform.jsp").forward(request, response);
 					return; // Exit to prevent adding the student
 				}
 			} catch (StudentNotFoundException1 e) {
-				// If no exception is thrown, it means there's no duplicate
+				// If the exception is thrown, it means there's no duplicate
 				// Continue with adding the student
+				System.out.println("No duplicate roll number found. Proceeding with adding the student.");
 			}
 
+			// Create Student object and set properties
 			// Create Student object and set properties
 			Student student = new Student();
 			student.setStudentcode(studentcode);
@@ -95,12 +98,17 @@ public class StudentServlet extends HttpServlet {
 			student.setimage(null);
 
 			// Add the student record
-			studentService.addStudent(student);
-			response.sendRedirect("GetAllStudentsServlet"); // Redirect to the success page
+			if (studentService.addStudent(student) != null) { // Assuming addStudent returns a boolean
+				HttpSession session = request.getSession();
+				session.setAttribute("sessionMessage", "Student submitted successfully!");
+				response.sendRedirect("GetAllStudentsServlet");
+			} else {
+				request.setAttribute("errorMessage", "Error adding student.");
+				request.getRequestDispatcher("studentform.jsp").forward(request, response);
+			}
 
 		} catch (NumberFormatException e) {
-			// Handle number format exception
-			request.setAttribute("databaseError", "Invalid number format. Please check your input.");
+			request.setAttribute("invalidNumberError", "Invalid number format. Please check your input.");
 			request.getRequestDispatcher("studentform.jsp").forward(request, response);
 		}
 	}

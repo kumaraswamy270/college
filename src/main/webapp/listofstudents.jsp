@@ -5,24 +5,23 @@
 <title>List of Students</title>
 
 <div class="container">
-	<%
-    String successMessage = (String) request.getAttribute("successMessage");
-    if (successMessage != null) {
-        
-       
-%>
-	<!-- Optionally you can style the message below -->
-	<div class="success-message"><%= successMessage %></div>
-	<%
-    } 
-%>
+	<!-- Display success message from request scope -->
+	<c:if test="${not empty successMessage}">
+		<div class="alert alert-success">${successMessage}</div>
+	</c:if>
+
+	<!-- Display session message from session scope -->
+	<c:if test="${not empty sessionScope.sessionMessage}">
+		<div class="alert alert-success">${sessionScope.sessionMessage}</div>
+		<c:remove var="sessionMessage" scope="session" />
+	</c:if>
 
 
 	<h1>List of Students</h1>
 
-	<table>
+	<table class="table table-striped table-bordered">
 		<thead>
-			<tr>
+			<tr class="table-primary">
 				<th>Student Code</th>
 				<th>Roll Number</th>
 				<th>Marks</th>
@@ -40,19 +39,19 @@
 		</thead>
 		<tbody>
 			<c:forEach var="student" items="${studentlist}">
-				<tr>
-					<td>${student.studentcode}</td>
-					<td>${student.rollnumber}</td>
-					<td>${student.marks}</td>
-					<td>${student.branch}</td>
-					<td>${student.college}</td>
-					<td>${student.firstname}</td>
-					<td>${student.lastname}</td>
-					<td>${student.fathername}</td>
-					<td>${student.mobileno}</td>
-					<td>${student.dateofbirth}</td>
-					<td>${student.address}</td>
-					<td>${student.status}</td>
+				<tr class="table-light">
+					<td class="align-middle">${student.studentcode}</td>
+					<td class="align-middle">${student.rollnumber}</td>
+					<td class="align-middle">${student.marks}</td>
+					<td class="align-middle">${student.branch}</td>
+					<td class="align-middle">${student.college}</td>
+					<td class="align-middle">${student.firstname}</td>
+					<td class="align-middle">${student.lastname}</td>
+					<td class="align-middle">${student.fathername}</td>
+					<td class="align-middle">${student.mobileno}</td>
+					<td class="align-middle">${student.dateofbirth}</td>
+					<td class="align-middle">${student.address}</td>
+					<td class="align-middle">${student.status}</td>
 					<td><a href="EditServlet?rollnumber=${student.rollnumber}">Edit</a>
 						| <a href="DeleteStudentServlet?rollnumber=${student.rollnumber}"
 						onclick="return confirm('Are you sure you want to delete this student?');">Delete</a>
