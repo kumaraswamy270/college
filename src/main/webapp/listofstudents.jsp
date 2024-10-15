@@ -16,10 +16,16 @@
 		<c:remove var="sessionMessage" scope="session" />
 	</c:if>
 
-
 	<h1>List of Students</h1>
 
-	<table class="table table-striped table-bordered">
+	<form class="d-flex ms-auto" role="search"
+		onsubmit="event.preventDefault(); filterStudents();">
+		<input id="searchInput" class="form-control me-2" type="search"
+			placeholder="Search by Roll Number or Name" aria-label="Search">
+		<button class="btn btn-outline-success" type="submit">Search</button>
+	</form>
+
+	<table id="studentTable" class="table table-striped table-bordered">
 		<thead>
 			<tr class="table-primary">
 				<th>Student Code</th>
@@ -61,4 +67,5 @@
 		</tbody>
 	</table>
 </div>
+<script src="js/search.js"></script>
 <jsp:include page="footer.jsp" />
