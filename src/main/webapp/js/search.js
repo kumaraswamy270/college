@@ -1,32 +1,38 @@
 
-document.addEventListener('DOMContentLoaded', function() {
-    const input = document.getElementById('searchInput');
+function filterStudents() {
+    // Get the search input value
+    const searchInput = document.getElementById('searchInput').value.toLowerCase();
     const table = document.getElementById('studentTable');
-    
-    document.querySelector('form').onsubmit = function(event) {
-        event.preventDefault(); // Prevent the form from submitting
-        filterStudents(); // Call the filter function
-    };
+    const tbody = table.getElementsByTagName('tbody')[0];
+    const rows = tbody.getElementsByTagName('tr');
+    let found = false;
 
-    function filterStudents() {
-        const filter = input.value.toLowerCase();
-        const tr = table.getElementsByTagName('tr');
+    // Clear previous "Student not found" message
+    const notFoundMessage = document.getElementById('notFoundMessage');
+    if (notFoundMessage) {
+        notFoundMessage.remove();
+    }
 
-        // Loop through all table rows, and hide those that don't match the search query
-        for (let i = 1; i < tr.length; i++) { // Start from 1 to skip the header row
-            const td = tr[i].getElementsByTagName('td');
-            let isMatch = false;
-
-            // Loop through each cell in the current row
-            for (let j = 0; j < td.length; j++) {
-                if (td[j] && td[j].innerText.toLowerCase().indexOf(filter) > -1) {
-                    isMatch = true;
-                    break;
-                }
+    // Loop through the rows and hide those that do not match the search
+    for (let i = 0; i < rows.length; i++) {
+        const rollNumber = rows[i].getElementsByTagName('td')[1]; 
+        if (rollNumber) {
+            // Check if the roll number matches the search input
+            if (rollNumber.textContent.toLowerCase() === searchInput) {
+                rows[i].style.display = ''; // Show the matching row
+                found = true; // Set found to true if a match is found
+            } else {
+                rows[i].style.display = 'none'; // Hide the non-matching row
             }
-
-            // Show or hide the row based on whether there was a match
-            tr[i].style.display = isMatch ? '' : 'none';
         }
     }
-});
+
+    // If no match was found, display a "Student not found" message
+    if (!found && searchInput) {
+        const message = document.createElement('div');
+        message.id = 'notFoundMessage';
+        message.className = 'alert alert-warning'; 
+        message.textContent = 'No Result Found';
+        table.parentNode.insertBefore(message, table); 
+    }
+}
