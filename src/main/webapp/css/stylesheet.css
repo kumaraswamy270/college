@@ -124,29 +124,6 @@ button#cancelButton {
 	border: 2px solid red !important;
 	/* Use !important to ensure it applies */
 }
-
-/* Success message styling */
-.success-message {
-	background-color: #d4edda; /* Light green background */
-	color: #155724; /* Dark green text */
-	padding: 15px;
-	border: 1px solid #c3e6cb; /* Green border */
-	border-radius: 5px; /* Rounded corners */
-	margin-bottom: 20px; /* Space below */
-}
-
-.success {
-	/* Optional: Define for other uses but avoid conflicts */
-	color: red; /* Only use this if you need it elsewhere */
-}
-/* Error message style */
-.error-message {
-	color: red;
-	font-size: 0.875em;
-	display: block;
-	margin-top: 0.25em;
-}
-
 /* Ordered list styling */
 ol {
 	padding-left: 20px;
@@ -160,17 +137,6 @@ ol li {
 }
 
 /* Table styling */
-table {
-	width: 100%;
-	border-collapse: collapse;
-	margin-bottom: 20px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-table th, table td {
-	padding: 12px;
-	text-align: left;
-}
 
 /* Light mode table styling */
 table.light-mode {
