@@ -147,6 +147,7 @@
 		<button id="submitButton" type="submit" class="btn btn-primary">Submit</button>
 	</form>
 </div>
-
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="js/studentform.js"></script>
 <jsp:include page="footer.jsp" />>
