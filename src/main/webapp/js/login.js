@@ -1,49 +1,48 @@
-document.getElementById("loginForm").addEventListener("submit", function(event) {
-    // Optional: Remove clearErrors() since you are already clearing errors manually
-    // clearErrors(); 
+$(document).ready(function() {
+	$("#loginForm").on("submit", function(event) {
+		let isValid = true;
 
-    let isValid = true;
-    
+		// Clear previous error messages
+		$("#usernameError").text("");
+		$("#passwordError").text("");
 
-    // Clear previous error messages
-    document.getElementById("usernameError").innerText = "";
-    document.getElementById("passwordError").innerText = "";
+		// Get values
+		const username = $("#username").val().trim();
+		const password = $("#password").val().trim();
 
-    // Get values
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
+		// Validate username
+		if (username === "") {
+			isValid = false;
+			$("#usernameError").text("Username is required.");
+			$("#username").addClass("error-border");
+		} else {
+			$("#username").removeClass("error-border");
+		}
 
-    // Validate username
-    if (username === "") {
-        isValid = false;
-        document.getElementById("usernameError").innerText = "Username is required.";
-        document.getElementById("username").classList.add("error-border");
-    } else {
-        document.getElementById("username").classList.remove("error-border");
-    }
+		// Validate password
+		if (password === "") {
+			isValid = false;
+			$("#passwordError").text("Password is required.");
+			$("#password").addClass("error-border");
+		} else {
+			$("#password").removeClass("error-border");
+		}
 
-    // Validate password
-    if (password === "") {
-        isValid = false;
-        document.getElementById("passwordError").innerText = "Password is required.";
-        document.getElementById("password").classList.add("error-border");
-    } else {
-        document.getElementById("password").classList.remove("error-border");
-    }
+		// If validation fails, prevent form submission
+		if (!isValid) {
+			event.preventDefault(); // Prevent form submission only if
+									// validation fails
+		}
+	});
 
-    // If validation fails, prevent form submission
-    if (!isValid) {
-        event.preventDefault(); // Prevent form submission only if validation fails
-    }
-});
+	// Add event listeners to input fields to clear error messages on input
+	$("#username").on("input", function() {
+		$("#usernameError").text(""); // Clear error message
+		$(this).removeClass("error-border"); // Remove error border
+	});
 
-// Add event listeners to input fields to clear error messages on input
-document.getElementById("username").addEventListener("input", function() {
-    document.getElementById("usernameError").innerText = ""; // Clear error message
-    this.classList.remove("error-border"); // Remove error border
-});
-
-document.getElementById("password").addEventListener("input", function() {
-    document.getElementById("passwordError").innerText = ""; // Clear error message
-    this.classList.remove("error-border"); // Remove error border
+	$("#password").on("input", function() {
+		$("#passwordError").text(""); // Clear error message
+		$(this).removeClass("error-border"); // Remove error border
+	});
 });

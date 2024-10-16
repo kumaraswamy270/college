@@ -1,22 +1,21 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const modeToggle = document.getElementById('modeToggle');
+$(document).ready(function() {
+    const $modeToggle = $('#modeToggle');
 
     // Set initial mode based on current body class
-    if (document.body.classList.contains('night-mode')) {
-        modeToggle.textContent = 'Switch to Light Mode';
+    if ($('body').hasClass('night-mode')) {
+        $modeToggle.text('Switch to Light Mode');
     } else {
-        modeToggle.textContent = 'Switch to Night Mode';
+        $modeToggle.text('Switch to Night Mode');
     }
 
-    modeToggle.addEventListener('click', function() {
-        document.body.classList.toggle('night-mode');
-        document.body.classList.toggle('light-mode');
+    $modeToggle.on('click', function() {
+        $('body').toggleClass('night-mode light-mode');
 
         // Update button text based on current mode
-        if (document.body.classList.contains('night-mode')) {
-            modeToggle.textContent = 'Switch to Light Mode';
+        if ($('body').hasClass('night-mode')) {
+            $modeToggle.text('Switch to Light Mode');
         } else {
-            modeToggle.textContent = 'Switch to Night Mode';
+            $modeToggle.text('Switch to Night Mode');
         }
     });
 });
