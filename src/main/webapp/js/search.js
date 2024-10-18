@@ -1,4 +1,14 @@
 
+// Wait for the DOM to be fully loaded
+$(document).ready(function() {
+    // Attach an event listener to the form submission
+    $('#searchForm').on('submit', function(event) {
+        event.preventDefault(); // Prevent the default form submission behavior
+        filterStudents(); // Call the filterStudents function
+    });
+});
+
+// The filterStudents function remains as it is
 function filterStudents() {
     // Get the search input value
     const searchInput = $('#searchInput').val().toLowerCase();

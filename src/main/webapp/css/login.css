@@ -1,41 +1,40 @@
-/* custom-styles.css */
 .custom-body {
-    background: lightblue;
-    font-family: Arial, sans-serif;
+	background: lightblue;
+	font-family: Arial, sans-serif;
 }
 
 .bg-pink {
-    background-color: pink !important;
+	background-color: pink !important;
 }
 
 .logo {
-    width: 100px;
-    height: auto;
+	width: 100px;
+	height: auto;
 }
 
 .btn-success {
-    background-color: #4CAF50 !important;
-    border: none;
-    transition: background-color 0.3s;
+	background-color: #4CAF50 !important;
+	border: none;
+	transition: background-color 0.3s;
 }
 
 .btn-success:hover {
-    background-color: #45a049 !important;
+	background-color: #45a049 !important;
 }
 
 .form-control:focus {
-    border-color: #28a745;
-    box-shadow: none;
+	border-color: #28a745;
+	box-shadow: none;
 }
 
 .error {
-    background-color: #ff8080;
-    color: red;
-    font-size: 14px;
+	background-color: #ff8080;
+	color: red;
+	font-size: 14px;
 }
 
 .success-message {
-    background-color: #008000;
-    color: #ffffff;
-    border: 1px solid #c3e6cb;
+	background-color: #008000;
+	color: #ffffff;
+	border: 1px solid #c3e6cb;
 }

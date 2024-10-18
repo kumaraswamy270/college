@@ -7,7 +7,6 @@ body {
 	color: #000000;
 }
 
-/* Header styling */
 header {
 	background-color: #333;
 	color: white;
@@ -92,7 +91,7 @@ form .full-width {
 }
 
 /* Optional: Make smaller screens adapt well */
-@media ( max-width : 768px) {
+@media ( max-width : 1000px) {
 	.form-row {
 		flex-direction: column;
 		gap: 10px; /* Reduce gap for smaller screens */
