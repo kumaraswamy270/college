@@ -2,7 +2,7 @@
 <%@ include file="Header.jsp"%>
 <%@ include file="sessionCheck.jsp"%>
 
-<div class="container">
+<div class="container mt-4 form-container">
 	<h2>Register a New Student</h2>
 
 	<c:if test="${not empty databaseError}">
@@ -25,7 +25,6 @@
 
 	<form id="studentForm" action="StudentServlet" method="POST">
 		<div class="row mb-3">
-			<!-- Student Code -->
 			<div class="col-md-6 mb-3">
 				<label for="studentCode" class="form-label">Student Code
 					(Auto-incremented)</label> <input type="number" class="form-control"
@@ -34,7 +33,6 @@
 					id="studentCodeError" class="text-danger"></span>
 			</div>
 
-			<!-- Roll Number -->
 			<div class="col-md-6 mb-3">
 				<label for="rollNumber" class="form-label">Roll Number</label> <input
 					type="number" class="form-control" id="rollNumber"
@@ -44,7 +42,6 @@
 		</div>
 
 		<div class="row mb-3">
-			<!-- Marks -->
 			<div class="col-md-6 mb-3">
 				<label for="marks" class="form-label">Marks</label> <input
 					type="number" class="form-control" id="marks" name="marks"
@@ -52,7 +49,6 @@
 					class="text-danger"></span>
 			</div>
 
-			<!-- Branch -->
 			<div class="col-md-6 mb-3">
 				<label for="branch" class="form-label">Branch</label> <input
 					type="text" class="form-control" id="branch" name="branch"
@@ -62,7 +58,6 @@
 		</div>
 
 		<div class="row mb-3">
-			<!-- College -->
 			<div class="col-md-6 mb-3">
 				<label for="college" class="form-label">College</label> <input
 					type="text" class="form-control" id="college" name="college"
@@ -70,7 +65,6 @@
 					class="text-danger"></span>
 			</div>
 
-			<!-- First Name -->
 			<div class="col-md-6 mb-3">
 				<label for="firstname" class="form-label">First Name</label> <input
 					type="text" class="form-control" id="firstname" name="firstname"
@@ -80,7 +74,6 @@
 		</div>
 
 		<div class="row mb-3">
-			<!-- Last Name -->
 			<div class="col-md-6 mb-3">
 				<label for="lastname" class="form-label">Last Name</label> <input
 					type="text" class="form-control" id="lastname" name="lastname"
@@ -88,7 +81,6 @@
 					class="text-danger"></span>
 			</div>
 
-			<!-- Father Name -->
 			<div class="col-md-6 mb-3">
 				<label for="fathername" class="form-label">Father's Name</label> <input
 					type="text" class="form-control" id="fathername" name="fathername"
@@ -98,7 +90,6 @@
 		</div>
 
 		<div class="row mb-3">
-			<!-- Mobile Number -->
 			<div class="col-md-6 mb-3">
 				<label for="mobileno" class="form-label">Mobile Number</label> <input
 					type="text" class="form-control" id="mobileno" name="mobileno"
@@ -106,7 +97,6 @@
 					class="text-danger"></span>
 			</div>
 
-			<!-- Date of Birth -->
 			<div class="col-md-6 mb-3">
 				<label for="dateOfBirth" class="form-label">Date of Birth</label> <input
 					type="date" class="form-control" id="dateOfBirth"
@@ -116,7 +106,6 @@
 		</div>
 
 		<div class="row mb-3">
-			<!-- Address -->
 			<div class="col-md-6 mb-3">
 				<label for="address" class="form-label">Address</label> <input
 					type="text" class="form-control" id="address" name="address"
@@ -124,7 +113,6 @@
 					class="text-danger"></span>
 			</div>
 
-			<!-- Status (Active/Inactive) -->
 			<div class="col-md-6 mb-3">
 				<label for="status" class="form-label">Status</label> <select
 					class="form-select" id="status" name="status">
@@ -136,7 +124,6 @@
 		</div>
 
 		<div class="row mb-3">
-			<!-- Profile Image -->
 			<div class="col-12 mb-3">
 				<label for="profileImage" class="form-label">Profile Image
 					(optional)</label> <input type="file" class="form-control"
@@ -144,7 +131,11 @@
 			</div>
 		</div>
 
-		<button id="submitButton" type="submit" class="btn btn-primary">Submit</button>
+		<div class="row mb-3">
+			<div class="col-12">
+				<button id="submitButton" type="submit" class="btn btn-primary">Submit</button>
+			</div>
+		</div>
 	</form>
 </div>
 <script

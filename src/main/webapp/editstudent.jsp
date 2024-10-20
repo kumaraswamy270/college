@@ -3,7 +3,7 @@
 <%@ include file="Header.jsp"%>
 
 
-<div class="container">
+<div class="container mt-4 form-container">
 	<h2>Edit Student Information</h2>
 
 	<!-- Display error message if exists -->

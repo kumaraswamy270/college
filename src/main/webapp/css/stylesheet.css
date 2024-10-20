@@ -18,15 +18,6 @@ header {
 	margin: 0 auto;
 }
 
-/* Logo styling - placed on the left */
-.logo {
-	width: 100px;
-	height: auto;
-	display: block;
-	margin-right: 5px;
-}
-
-/* Heading styling - placed in the center */
 header h1 {
 	flex-grow: 1;
 	text-align: center;
@@ -94,7 +85,7 @@ form .full-width {
 @media ( max-width : 1000px) {
 	.form-row {
 		flex-direction: column;
-		gap: 10px; /* Reduce gap for smaller screens */
+		gap: 100px; /* Reduce gap for smaller screens */
 	}
 }
 
@@ -234,10 +225,11 @@ footer {
 	background-color: #333;
 	color: white;
 	text-align: center;
-	padding: 2px 0;
-	position: relative;
-	bottom: 0;
-	width: 100%;
+	padding: 1px 0;
+	width: 100%; /* Ensure the footer takes the full width */
+	position: fixed; /* Change to fixed to stay at the bottom */
+	bottom: 0; /* Position it at the bottom */
+	left: 0; /* Align to the left */
 }
 
 footer p {
