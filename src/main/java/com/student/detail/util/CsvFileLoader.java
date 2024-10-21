@@ -12,7 +12,7 @@ import java.util.List;
 
 import com.student.detail.model.Student;
 
-public class CsvFileLodder { // Corrected the class name to CsvFileLoader
+public class CsvFileLoader { // Class name updated to CsvFileLoader
 
 	private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
@@ -21,7 +21,13 @@ public class CsvFileLodder { // Corrected the class name to CsvFileLoader
 
 		try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
 			String line;
+			boolean isFirstLine = true; // Flag to skip the header line
+
 			while ((line = br.readLine()) != null) {
+				if (isFirstLine) {
+					isFirstLine = false; // Skip the first line (header)
+					continue;
+				}
 				Student student = parseStudent(line);
 				if (student != null) {
 					students.add(student);
@@ -37,7 +43,7 @@ public class CsvFileLodder { // Corrected the class name to CsvFileLoader
 	private static Student parseStudent(String line) {
 		String[] data = line.split(",");
 
-		if (data.length != 13) { // Assuming the CSV now has 13 fields
+		if (data.length != 13) { // Assuming the CSV has 13 fields
 			System.err.println("Invalid data format in line: " + line);
 			return null;
 		}
@@ -47,29 +53,14 @@ public class CsvFileLodder { // Corrected the class name to CsvFileLoader
 		String statusStr = data[11].trim();
 		String imagePath = data[12].trim(); // This is the path to the image file
 
-		boolean isValidRecord = true;
-
-		if (firstname.isEmpty()) {
-			System.err.println("Missing required field: first name in line: " + line);
-			isValidRecord = false;
-		}
-
-		if (dob.isEmpty()) {
-			System.err.println("Missing required field: date of birth in line: " + line);
-			isValidRecord = false;
-		}
-
-		if (statusStr.isEmpty()) {
-			System.err.println("Missing required field: status in line: " + line);
-			isValidRecord = false;
-		}
-
-		if (!isValidRecord) {
+		// Check for required fields
+		if (firstname.isEmpty() || dob.isEmpty() || statusStr.isEmpty()) {
+			System.err.println("Missing required fields in line: " + line);
 			return null;
 		}
 
 		try {
-			int studentcode = Integer.parseInt(data[0].trim()); // Added parsing for studentcode
+			int studentcode = Integer.parseInt(data[0].trim());
 			int rollnumber = Integer.parseInt(data[1].trim());
 			int marks = Integer.parseInt(data[2].trim());
 			String branch = data[3].trim();
@@ -77,11 +68,11 @@ public class CsvFileLodder { // Corrected the class name to CsvFileLoader
 			String lastname = data[6].trim();
 			String fathername = data[7].trim();
 			String mobileno = data[8].trim();
-			LocalDate dateOfBirth = parseLocalDate(data[9].trim());
+			LocalDate dateOfBirth = parseLocalDate(dob);
 			String address = data[10].trim();
 			boolean status = Integer.parseInt(statusStr) == 1; // Parse status as boolean
 
-			byte[] getImage = loadImage(imagePath); // Use the new getImage field
+			byte[] getImage = loadImage(imagePath); // Load the image bytes
 
 			if (dateOfBirth == null) {
 				System.err.println("Invalid date format for line: " + line);
@@ -89,10 +80,10 @@ public class CsvFileLodder { // Corrected the class name to CsvFileLoader
 			}
 
 			return new Student(studentcode, rollnumber, marks, branch, college, firstname, lastname, fathername,
-					mobileno, dateOfBirth, address, status, getImage); // Updated constructor call
+					mobileno, dateOfBirth, address, status, getImage);
 
 		} catch (NumberFormatException e) {
-			System.err.println("Error parsing numeric data in line: " + line);
+			System.err.println("Error parsing numeric data in line: " + line + ". Error: " + e.getMessage());
 			return null;
 		}
 	}
@@ -110,7 +101,7 @@ public class CsvFileLodder { // Corrected the class name to CsvFileLoader
 		try {
 			return Files.readAllBytes(Paths.get(imagePath));
 		} catch (IOException e) {
-			System.err.println("Error loading image from path: " + imagePath);
+			System.err.println("Error loading image from path: " + imagePath + ". Error: " + e.getMessage());
 			return null;
 		}
 	}
