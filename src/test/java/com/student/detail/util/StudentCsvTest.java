@@ -10,10 +10,9 @@ class StudentCsvTest {
 
 	@Test
 	void testLoadStudentData() {
-		String filePath = "D:\\sample\\Studentdata.csv"; // Update this path as necessary
+		String filePath = "D:\\sample\\Studentdata.csv";
 		List<Student> students = CsvFileLoader.loadStudentData(filePath);
 
-		// Check if the students list is not null and not empty
 		if (students != null && !students.isEmpty()) {
 			System.out.println("Students (Unsorted):");
 			for (Student student : students) {
