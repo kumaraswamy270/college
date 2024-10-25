@@ -7,7 +7,8 @@
 <div class="container">
 	<!-- Display success message from request scope -->
 	<div class="row">
-		<div class="col-12">
+		<div class="d-flex justify-content-center align-items-center"
+			style="height: 1vh;">
 			<c:if test="${not empty successMessage}">
 				<div class="alert alert-success">${successMessage}</div>
 			</c:if>
@@ -16,7 +17,8 @@
 
 	<!-- Display session message from session scope -->
 	<div class="row">
-		<div class="col-12">
+		<div class="d-flex justify-content-center align-items-center"
+			style="height: 1vh;">
 			<c:if test="${not empty sessionScope.sessionMessage}">
 				<div class="alert alert-success">${sessionScope.sessionMessage}</div>
 				<c:remove var="sessionMessage" scope="session" />
@@ -97,6 +99,7 @@
 		</div>
 	</div>
 
-
+	<script
+		src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 	<script src="js/search.js"></script>
 	<jsp:include page="footer.jsp" />

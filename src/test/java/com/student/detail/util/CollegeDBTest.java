@@ -15,7 +15,7 @@ class CollegeDBTest {
 	@Test
 	void testCollegeOperations() {
 		// 1. Load data from CSV
-		String filePath = "D:\\sample\\CollegeData.csv"; // Update this path as necessary
+		String filePath = "D:\\sample\\CollegeData.csv"; 
 		List<College> colleges = CsvFileLoaderCollege.loadCollegesFromCsv(filePath);
 
 		// 2. Initialize the CollegeService implementation
