@@ -1,7 +1,9 @@
 package com.student.detail.util;
 
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+
 import com.student.detail.exception.CollegeNotFoundException;
 import com.student.detail.model.College;
 import com.student.detail.service.CollegeDBService;
@@ -12,25 +14,27 @@ import java.util.List;
 
 class CollegeDBTest {
 
-	@Test
-	void testCollegeOperations() {
-		// 1. Load data from CSV
-		String filePath = "D:\\sample\\CollegeData.csv"; 
-		List<College> colleges = CsvFileLoaderCollege.loadCollegesFromCsv(filePath);
+	private static CollegeService collegeService;
+	private static List<College> colleges;
 
-		// 2. Initialize the CollegeService implementation
-		CollegeService collegeService = new CollegeDBService();
+	@BeforeAll
+	static void setup() {
+		String filePath = "D:\\sample\\CollegeData.csv"; // Update this path as necessary
+		colleges = CsvFileLoaderCollege.loadCollegesFromCsv(filePath);
+		collegeService = new CollegeDBService();
 
 		// Add colleges from the CSV to the service
-		for (College college : colleges) {
+		colleges.forEach(college -> {
 			try {
 				collegeService.addCollege(college);
 			} catch (Exception e) {
-				System.err.println("Error adding college: " + e.getMessage());
+				fail("Failed to add college: " + e.getMessage());
 			}
-		}
+		});
+	}
 
-		// Update a college's details
+	@Test
+	void testUpdateCollegeDetails() {
 		try {
 			College collegeToUpdate = collegeService.findCollegeById(1);
 			collegeToUpdate.setCollegeName("JNTU");
@@ -38,48 +42,71 @@ class CollegeDBTest {
 
 			// Update college details
 			College updatedCollege = collegeService.updateCollege(collegeToUpdate);
-			System.out.println("Updated college: " + updatedCollege);
 			assertEquals("JNTU", updatedCollege.getCollegeName());
 			assertEquals("Kakinada", updatedCollege.getCity());
 
 		} catch (CollegeNotFoundException e) {
-			System.err.println("Error updating college: " + e.getMessage());
+			fail("Error updating college: " + e.getMessage());
 		}
+	}
 
-		// Delete a college
+	@Test
+	void testDeleteCollege() {
 		try {
 			College collegeToDelete = collegeService.findCollegeById(2);
 			boolean isDeleted = collegeService.deleteCollege(collegeToDelete);
-			System.out.println("College deleted: " + isDeleted);
-			assertTrue(isDeleted);
+			assertTrue(isDeleted, "College should be deleted successfully");
 
 		} catch (CollegeNotFoundException e) {
-			System.err.println("Error deleting college: " + e.getMessage());
+			fail("Error deleting college: " + e.getMessage());
 		}
+	}
 
-		// Find a college by name
+	@Test
+	void testFindCollegeByName() {
 		try {
-			College foundCollegeByName = collegeService.findCollegeByName("B.V Raju");
-			System.out.println("Found college by name: " + foundCollegeByName);
-			assertNotNull(foundCollegeByName);
+			College foundCollegeByName = collegeService.findCollegeByName("JNTU");
+			assertNotNull(foundCollegeByName, "College should be found by name");
 
 		} catch (CollegeNotFoundException e) {
-			System.err.println("Error finding college by name: " + e.getMessage());
+			fail("Error finding college by name: " + e.getMessage());
 		}
+	}
 
-		// Find colleges by city
+	@Test
+	void testFindCollegesByCity() {
 		List<College> collegesByCity = collegeService.findCollegesByCity("Bhimavaram");
-		System.out.println("Colleges in Bhimavaram: " + collegesByCity);
-		assertFalse(collegesByCity.isEmpty());
+		assertFalse(collegesByCity.isEmpty(), "Colleges in Bhimavaram should be found");
+	}
 
-		// Get the count of all colleges
+	@Test
+	void testGetCountOfColleges() {
 		int collegeCount = collegeService.getCountOfColleges();
-		System.out.println("Total number of colleges: " + collegeCount);
-		assertTrue(collegeCount > 0);
+		assertTrue(collegeCount > 0, "College count should be greater than zero");
+	}
 
-		// Fetch and print all colleges
+	@Test
+	void testGetAllColleges() {
 		List<College> allColleges = collegeService.getAllColleges();
-		System.out.println("All colleges: " + allColleges);
-		assertFalse(allColleges.isEmpty());
+		assertNotNull(allColleges, "All colleges list should not be null");
+		assertFalse(allColleges.isEmpty(), "All colleges list should not be empty");
+	}
+
+	@Test
+	void testFindCollegeById() {
+		try {
+			// Test for an existing college
+			College foundCollege = collegeService.findCollegeById(1); // Assuming ID 1 exists
+			assertNotNull(foundCollege, "College with ID 1 should be found");
+			assertEquals(1, foundCollege.getCollegeId(), "College ID should match");
+
+			// Test for a non-existing college
+			assertThrows(CollegeNotFoundException.class, () -> {
+				collegeService.findCollegeById(999); // Assuming ID 999 does not exist
+			}, "College with ID 999 should not be found");
+
+		} catch (CollegeNotFoundException e) {
+			fail("Unexpected exception while finding college by ID: " + e.getMessage());
+		}
 	}
 }

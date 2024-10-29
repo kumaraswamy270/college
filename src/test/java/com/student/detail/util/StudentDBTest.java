@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 import com.student.detail.exception.StudentNotFoundException1;
 import com.student.detail.model.Student;
@@ -14,16 +16,14 @@ import com.student.detail.service.StudentService;
 
 class StudentDBTest {
 
-	@Test
-	void testStudentOperations() {
-		// 1. Load data from CSV
+	private static StudentService studentService;
+	private static List<Student> students;
+
+	@BeforeAll
+	static void setup() {
 		String filePath = "D:\\sample\\Studentdata.csv"; // Update this path as necessary
-		List<Student> students = CsvFileLoader.loadStudentData(filePath);
-
-		// 2. Initialize the StudentService implementation
-		StudentService studentService = new StudentDBService();
-
-		// Add students from the CSV to the service
+		students = CsvFileLoader.loadStudentData(filePath);
+		studentService = new StudentDBService();
 		for (Student student : students) {
 			try {
 				studentService.addStudent(student);
@@ -31,86 +31,116 @@ class StudentDBTest {
 				System.err.println("Error adding student: " + e.getMessage());
 			}
 		}
+	}
 
-		// Update a student's details and retrieve the image
+	@Test
+	void testUpdateStudentDetails() {
 		try {
 			Student studentToUpdate = studentService.findStudentByRollnumber(92);
+			assertNotNull(studentToUpdate, "Student with roll number 92 should exist");
+
 			studentToUpdate.setFirstname("Kumar");
 			studentToUpdate.setLastname("Damisetti");
 			studentToUpdate.setMarks(90);
 
-			// Update student details
 			Student updatedStudent = studentService.updateStudent(studentToUpdate);
-			System.out.println("Updated student: " + updatedStudent);
+			assertEquals("Kumar", updatedStudent.getFirstname());
+			assertEquals("Damisetti", updatedStudent.getLastname());
+			assertEquals(90, updatedStudent.getMarks());
 
-			// Retrieve the image associated with the student
-			byte[] imageBytes = studentToUpdate.getimage(); // Use getImage method
+			byte[] imageBytes = updatedStudent.getimage();
 			if (imageBytes != null) {
-				// Convert byte[] to an image file
-				try (FileOutputStream fos = new FileOutputStream("D:\\sample\\Universe.jpg")) { // Changed file name
+				try (FileOutputStream fos = new FileOutputStream("D:\\sample\\Universe.jpg")) {
 					fos.write(imageBytes);
 				}
-				System.out.println("Image retrieved and saved as Universe.jpg");
+				System.out.println("Image saved as Universe.jpg");
 			} else {
 				System.out.println("No image found for this student.");
 			}
 
 		} catch (StudentNotFoundException1 | IOException e) {
-			System.err.println("Error: " + e.getMessage());
+			fail("Exception occurred: " + e.getMessage());
 		}
+	}
 
-		// Delete a student
+	@Test
+	void testDeleteStudent() {
 		try {
-			Student studentToDelete = studentService.findStudentByRollnumber(91);
+			Student studentToDelete = studentService.findStudentByRollnumber(81);
+			assertNotNull(studentToDelete, "Student with roll number 91 should exist before deletion");
+
 			boolean isDeleted = studentService.deleteStudent(studentToDelete);
-			System.out.println("Student deleted: " + isDeleted);
+			assertTrue(isDeleted, "Student should be deleted successfully");
+
+			// Verify deletion by attempting to find the student again
+			assertThrows(StudentNotFoundException1.class, () -> studentService.findStudentByRollnumber(91),
+					"Deleted student should not be found");
 
 		} catch (StudentNotFoundException1 e) {
-			System.err.println("Error deleting student: " + e.getMessage());
+			fail("Exception occurred while deleting student: " + e.getMessage());
 		}
+	}
 
-		// Find a student by roll number
+	@Test
+	void testFindStudentByRollnumber() {
 		try {
-			Student findStudentByRoll = studentService.findStudentByRollnumber(91);
-			System.out.println("Found student by roll number: " + findStudentByRoll);
+			Student foundStudent = studentService.findStudentByRollnumber(94);
+			assertNotNull(foundStudent, "Student with roll number 91 should be found");
 
 		} catch (StudentNotFoundException1 e) {
-			System.err.println("Error finding student by roll number: " + e.getMessage());
+			fail("Exception occurred while finding student by roll number: " + e.getMessage());
 		}
+	}
 
-		// Find a student by name
+	@Test
+	void testFindStudentByName() {
 		try {
-			Student findStudentByName = studentService.findStudentByName("xxxx");
-			System.out.println("Found student by name: " + findStudentByName);
+			String name = "Rhyloo";
+			Student foundStudent = studentService.findStudentByName(name);
+			assertNotNull(foundStudent, "Student with name 'xxxx' should be found");
+			assertEquals(name, foundStudent.getFirstname(), "Student's first name should match");
 
 		} catch (StudentNotFoundException1 e) {
-			System.err.println("Error finding student by name: " + e.getMessage());
+			fail("Exception occurred while finding student by name: " + e.getMessage());
 		}
+	}
 
-		// Find students by college name
+	@Test
+	void testFindStudentsByCollege() {
 		List<Student> studentsByCollege = studentService.findStudentsByCollege("B.v raju");
-		System.out.println("Students from B.v raju College: " + studentsByCollege);
+		assertFalse(studentsByCollege.isEmpty(), "Students should be found by college");
+	}
 
-		// Find students by date of birth range
+	@Test
+	void testFindStudentByDateofbirthRange() {
 		List<Student> studentsByDOBRange = studentService.findStudentByDateofbirthRange(LocalDate.of(2000, 6, 30),
 				LocalDate.of(2003, 12, 21));
-		System.out.println("Students born between 2000 and 2003: " + studentsByDOBRange);
+		assertFalse(studentsByDOBRange.isEmpty(), "Students should be found within the date of birth range");
+	}
 
-		// Get the count of all students
+	@Test
+	void testGetCountOfStudents() {
 		int studentCount = studentService.getCountofStudents();
-		System.out.println("Total number of students: " + studentCount);
+		assertTrue(studentCount > 0, "Student count should be greater than zero");
+	}
 
-		// Fetch and print all students
+	@Test
+	void testGetAllStudents() {
 		List<Student> allStudents = studentService.getAllStudent();
-		System.out.println("All students: " + allStudents);
+		assertNotNull(allStudents, "All students list should not be null");
+		assertFalse(allStudents.isEmpty(), "All students list should not be empty");
+	}
 
-		// Find a student by mobile number
+	@Test
+	void testFindStudentByMobileNumber() {
 		try {
-			Student foundStudentByMobile = studentService.findStudentByMobileNumber("1234567890");
-			System.out.println("Found student by mobile number: " + foundStudentByMobile);
+			String mobileNumber = "9704005249";
+			Student foundStudent = studentService.findStudentByMobileNumber(mobileNumber);
+			assertNotNull(foundStudent, "Student with mobile number '1234567890' should be found");
+			assertEquals(mobileNumber, foundStudent.getMobileno(), "Student's mobile number should match");
 
 		} catch (StudentNotFoundException1 e) {
-			System.err.println("Error finding student by mobile number: " + e.getMessage());
+			fail("Exception occurred while finding student by mobile number: " + e.getMessage());
 		}
 	}
 }
