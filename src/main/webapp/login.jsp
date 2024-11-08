@@ -11,14 +11,15 @@
 	href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
 	rel="stylesheet">
 <!-- Custom CSS -->
-<link rel="stylesheet" href="css/login.css">
+<link rel="stylesheet" type="text/css"
+	href="<c:url value='/css/login.css' />">
 </head>
 <body class="custom-body">
 
 	<div class="container mt-5">
 		<div class="row justify-content-center">
 			<div class="col-md-6 bg-pink p-4 rounded shadow">
-				<img src="img/logo.png" alt="Logo"
+				<img src="<c:url value='/img/logo.png'/>" alt="Logo"
 					class="img-fluid mb-4 mx-auto d-block logo">
 				<h1 class="text-center">Login</h1>
 				<c:choose>
@@ -58,7 +59,8 @@
 	</div>
 	<script
 		src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-	<script src="js/login.js"></script>
+	<script src="<c:url value='/js/login.js' />"></script>
+
 
 </body>
 </html>

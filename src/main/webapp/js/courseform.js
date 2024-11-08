@@ -1,77 +1,69 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Attach event listener to form submission
-    document.getElementById('courseForm').addEventListener('submit', function(event) {
+$(document).ready(function() {
+    $('#courseForm').on('submit', function(event) {
+        clearErrors();
         let isValid = true;
 
-        clearErrors();
-
-        let courseId = document.getElementById('courseId').value.trim();
-        if (courseId === '') {
-            document.getElementById('courseIdError').textContent = 'Course ID is required';
-            document.getElementById('courseId').classList.add('error-border');
+        // Existing fields validation
+        let courseIdStr = $('#courseId').val().trim();
+        if (courseIdStr === '') {
+            $('#courseIdError').text('Course ID is required');
+            $('#courseId').addClass('error-border');
             isValid = false;
         }
 
-        let courseName = document.getElementById('courseName').value.trim();
+        let courseName = $('#courseName').val().trim();
         if (courseName === '') {
-            document.getElementById('courseNameError').textContent = 'Course Name is required';
-            document.getElementById('courseName').classList.add('error-border');
+            $('#courseNameError').text('Course Name is required');
+            $('#courseName').addClass('error-border');
             isValid = false;
         }
 
-        let credits = document.getElementById('credits').value.trim();
+        let credits = $('#credits').val().trim();
         if (credits === '') {
-            document.getElementById('creditsError').textContent = 'Credits are required';
-            document.getElementById('credits').classList.add('error-border');
+            $('#creditsError').text('Credits are required');
+            $('#credits').addClass('error-border');
             isValid = false;
         }
 
-        let department = document.getElementById('department').value.trim();
+        let department = $('#department').val().trim();
         if (department === '') {
-            document.getElementById('departmentError').textContent = 'Department is required';
-            document.getElementById('department').classList.add('error-border');
+            $('#departmentError').text('Department is required');
+            $('#department').addClass('error-border');
             isValid = false;
         }
 
-        let duration = document.getElementById('duration').value.trim();
+        let duration = $('#duration').val().trim();
         if (duration === '') {
-            document.getElementById('durationError').textContent = 'Duration is required';
-            document.getElementById('duration').classList.add('error-border');
+            $('#durationError').text('Duration is required');
+            $('#duration').addClass('error-border');
             isValid = false;
         }
 
-        let feeStructure = document.getElementById('feeStructure').value.trim();
+        let feeStructure = $('#feeStructure').val().trim();
         if (feeStructure === '') {
-            document.getElementById('feeStructureError').textContent = 'Fee Structure is required';
-            document.getElementById('feeStructure').classList.add('error-border');
+            $('#feeStructureError').text('Fee Structure is required');
+            $('#feeStructure').addClass('error-border');
             isValid = false;
         }
 
-        let lengthOfStudents = document.getElementById('lengthOfStudents').value.trim();
+        let lengthOfStudents = $('#lengthOfStudents').val().trim();
         if (lengthOfStudents === '') {
-            document.getElementById('lengthOfStudentsError').textContent = 'Number of Students is required';
-            document.getElementById('lengthOfStudents').classList.add('error-border');
+            $('#lengthOfStudentsError').text('Length of Students is required');
+            $('#lengthOfStudents').addClass('error-border');
             isValid = false;
         }
 
-        let startDate = document.getElementById('startDate').value.trim();
+        let startDate = $('#startDate').val().trim();
         if (startDate === '') {
-            document.getElementById('startDateError').textContent = 'Start Date is required';
-            document.getElementById('startDate').classList.add('error-border');
+            $('#startDateError').text('Start Date is required');
+            $('#startDate').addClass('error-border');
             isValid = false;
         }
 
-        let endDate = document.getElementById('endDate').value.trim();
+        let endDate = $('#endDate').val().trim();
         if (endDate === '') {
-            document.getElementById('endDateError').textContent = 'End Date is required';
-            document.getElementById('endDate').classList.add('error-border');
-            isValid = false;
-        }
-
-        let courseType = document.getElementById('courseType').value.trim();
-        if (courseType === '') {
-            document.getElementById('courseTypeError').textContent = 'Course Type is required';
-            document.getElementById('courseType').classList.add('error-border');
+            $('#endDateError').text('End Date is required');
+            $('#endDate').addClass('error-border');
             isValid = false;
         }
 
@@ -81,98 +73,23 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Event listeners for removing error messages on input change
-    document.getElementById('courseId').addEventListener('input', function() {
-        if (this.value.trim() !== '') {
-            document.getElementById('courseIdError').textContent = '';
-            this.classList.remove('error-border');
-        }
-    });
+    // Clear error messages function
+    function clearErrors() {
+        $('#courseIdError, #courseNameError, #creditsError, #departmentError, #durationError, #feeStructureError, #lengthOfStudentsError, #startDateError, #endDateError').text('');
 
-    document.getElementById('courseName').addEventListener('input', function() {
-        if (this.value.trim() !== '') {
-            document.getElementById('courseNameError').textContent = '';
-            this.classList.remove('error-border');
-        }
-    });
+        // Remove error border classes
+        const errorFields = ['courseId', 'courseName', 'credits', 'department', 'duration', 'feeStructure', 'lengthOfStudents', 'startDate', 'endDate'];
+        errorFields.forEach(field => {
+            $('#' + field).removeClass('error-border');
+        });
+    }
 
-    document.getElementById('credits').addEventListener('input', function() {
-        if (this.value.trim() !== '') {
-            document.getElementById('creditsError').textContent = '';
-            this.classList.remove('error-border');
-        }
-    });
-
-    document.getElementById('department').addEventListener('input', function() {
-        if (this.value.trim() !== '') {
-            document.getElementById('departmentError').textContent = '';
-            this.classList.remove('error-border');
-        }
-    });
-
-    document.getElementById('duration').addEventListener('input', function() {
-        if (this.value.trim() !== '') {
-            document.getElementById('durationError').textContent = '';
-            this.classList.remove('error-border');
-        }
-    });
-
-    document.getElementById('feeStructure').addEventListener('input', function() {
-        if (this.value.trim() !== '') {
-            document.getElementById('feeStructureError').textContent = '';
-            this.classList.remove('error-border');
-        }
-    });
-
-    document.getElementById('lengthOfStudents').addEventListener('input', function() {
-        if (this.value.trim() !== '') {
-            document.getElementById('lengthOfStudentsError').textContent = '';
-            this.classList.remove('error-border');
-        }
-    });
-
-    document.getElementById('startDate').addEventListener('input', function() {
-        if (this.value.trim() !== '') {
-            document.getElementById('startDateError').textContent = '';
-            this.classList.remove('error-border');
-        }
-    });
-
-    document.getElementById('endDate').addEventListener('input', function() {
-        if (this.value.trim() !== '') {
-            document.getElementById('endDateError').textContent = '';
-            this.classList.remove('error-border');
-        }
-    });
-
-    document.getElementById('courseType').addEventListener('change', function() {
-        if (this.value.trim() !== '') {
-            document.getElementById('courseTypeError').textContent = '';
-            this.classList.remove('error-border');
-        }
+    // Remove error border and message when user starts typing
+    const fields = ['courseId', 'courseName', 'credits', 'department', 'duration', 'feeStructure', 'lengthOfStudents', 'startDate', 'endDate'];
+    fields.forEach(field => {
+        $('#' + field).on('input', function() {
+            $('#' + field + 'Error').text('');
+            $(this).removeClass('error-border');
+        });
     });
 });
-
-function clearErrors() {
-    document.getElementById('courseIdError').textContent = '';
-    document.getElementById('courseNameError').textContent = '';
-    document.getElementById('creditsError').textContent = '';
-    document.getElementById('departmentError').textContent = '';
-    document.getElementById('durationError').textContent = '';
-    document.getElementById('feeStructureError').textContent = '';
-    document.getElementById('lengthOfStudentsError').textContent = '';
-    document.getElementById('startDateError').textContent = '';
-    document.getElementById('endDateError').textContent = '';
-    document.getElementById('courseTypeError').textContent = '';
-
-    document.getElementById('courseId').classList.remove('error-border');
-    document.getElementById('courseName').classList.remove('error-border');
-    document.getElementById('credits').classList.remove('error-border');
-    document.getElementById('department').classList.remove('error-border');
-    document.getElementById('duration').classList.remove('error-border');
-    document.getElementById('feeStructure').classList.remove('error-border');
-    document.getElementById('lengthOfStudents').classList.remove('error-border');
-    document.getElementById('startDate').classList.remove('error-border');
-    document.getElementById('endDate').classList.remove('error-border');
-    document.getElementById('courseType').classList.remove('error-border');
-}

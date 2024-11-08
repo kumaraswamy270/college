@@ -9,19 +9,18 @@ import com.student.detail.model.Student;
 
 class StudentCsvTest {
 
-    @Test
-    void testLoadStudentData() {
-        String filePath = "D:\\sample\\Studentdata.csv"; // Adjust the file path as necessary
-        List<Student> students = CsvFileLoader.loadStudentData(filePath);
+	@Test
+	void testLoadStudentData() {
+		String filePath = "D:\\sample\\Studentdata.csv";
+		List<Student> students = CsvFileLoader.loadStudentData(filePath);
 
-        // Assert that the student list is not null and not empty
-        assertNotNull(students, "Student list should not be null");
-        assertFalse(students.isEmpty(), "Student list should not be empty");
+		// Assert that the student list is not null and not empty
+		assertNotNull(students, "Student list should not be null");
+		assertFalse(students.isEmpty(), "Student list should not be empty");
 
-        // Optional: Print the unsorted list of students for manual verification
-        System.out.println("Students (Unsorted):");
-        for (Student student : students) {
-            System.out.println(student);
-        }
-    }
+		System.out.println("Students (Unsorted):");
+		for (Student student : students) {
+			System.out.println(student);
+		}
+	}
 }

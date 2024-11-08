@@ -1,71 +1,82 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>College Management System</title>
-<!-- Bootstrap 5 CDN -->
 <link
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
 	rel="stylesheet">
-<link rel="stylesheet" type="text/css" href="css/stylesheet.css">
+<link rel="stylesheet" type="text/css"
+	href="<c:url value='/css/stylesheet.css' />">
+
+<!-- Font Awesome for icons -->
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
-/* Custom styles for left-side layout */
+/* Sidebar default styling */
 .left-side-menu {
 	position: fixed;
-	top: 0;
+	top: 60px; /* Adjusted for new header height */
 	left: 0;
-	width: 220px;
-	height: 100%;
+	width: 70px;
+	height: calc(100% - 60px); /* Adjusted for new header height */
 	background-color: #343a40;
-	padding: 0.5rem;
 	color: white;
 	overflow-y: auto;
+	transition: width 0.3s;
+	padding-top: 1rem;
 }
 
-.left-side-menu .nav-link, .left-side-menu .btn {
+.left-side-menu.expanded {
+	width: 220px;
+}
+
+/* Sidebar items */
+.left-side-menu .nav-link {
 	color: white;
-	padding: 0.25rem 0.5rem;
-	margin-bottom: 8px;
-	width: calc(100% - 10px);
+	display: flex;
+	align-items: center;
+	padding: 0.75rem;
 	font-size: 0.85rem;
-	margin-left: 5px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.left-side-menu .nav-link i {
+	margin-right: 10px;
+	font-size: 1.2rem;
+}
+
+.left-side-menu.collapsed .nav-link span {
+	display: none; /* Hide text by default */
 }
 
 .content-area {
-	margin-left: 240px;
+	margin-left: 70px; /* Keep the left margin for sidebar */
+	margin-top: 60px; /* Add margin to avoid overlap with header */
 	padding: 1rem;
+	transition: margin-left 0.3s;
+	height: calc(100% - 60px); /* Adjust content area height */
+	overflow-y: auto; /* Allow scrolling if content overflows */
 }
 
-.dropdown-menu {
-	background-color: #343a40;
-	border: none;
+/* Align the three-line menu button and heading within the header */
+header h1 {
+	margin: 0;
+	font-size: 1.5rem; /* Adjusted font size for better fit */
 }
 
-.dropdown-item {
-	color: white;
-	font-size: 0.85rem;
+.navbar-toggler {
+	margin-right: 10px; /* Adjusts space between button and heading */
 }
 
-.dropdown-item:hover {
-	background-color: #495057;
-}
-
-.dropdown-toggle {
-	width: 100%;
-	text-align: left;
-	padding: 0.25rem;
-	font-size: 0.85rem;
-}
-
-header {
-	padding-top: 20px;
-	padding-bottom: 20px;
-	margin-left: 22px;
-}
-
-.form-container {
-	margin-left: 250px;
+/* Logo Styling */
+.logo {
+	height: 40px; /* Adjust logo height as needed */
+	margin-right: 1290px; /* Space between the logo and the menu button */
 }
 </style>
 </head>
@@ -73,89 +84,38 @@ header {
 <body class="light-mode">
 	<div class="container-fluid">
 		<!-- Header using Bootstrap 5 grid system -->
-		<header class="row bg-dark py-3">
-			<div class="col text-center">
-				<h1 class="text-white">College Management System</h1>
-			</div>
-			<div class="col text-end">
+		<header>
+			<!-- Sidebar Toggle Button in Header -->
+			<button class="fas fa-bars" type="button" onclick="toggleSidebar()">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<!-- Logo on the left side -->
+			<img src="<c:url value='/img/logo.png'/>" alt="Logo" class="logo">
+			<h1 class="text-white text-center">College Management System</h1>
+
+			<div>
 				<jsp:include page="loginuser.jsp" />
 			</div>
 		</header>
 
-		<!-- Body layout using Bootstrap 5 Grid -->
-		<div class="row">
-			<!-- Sidebar using Bootstrap grid -->
-			<nav class="col-md-3 col-lg-2 left-side-menu">
-				<div class="navbar navbar-dark flex-column">
-					<img src="img/logo.png" alt="Logo" style="width: 80px;"
-						class="rounded-pill mb-3">
-					<button class="navbar-toggler" type="button"
-						data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
-						aria-controls="navbarNavDropdown" aria-expanded="false"
-						aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
+		<div class="row m-1 p-0">
+			<!-- Sidebar Menu - Include Sidebar JSP -->
+			<jsp:include page="nav.jsp" />
 
-					<!-- Collapsible menu items -->
-					<div class="collapse navbar-collapse" id="navbarNavDropdown">
-						<button id="modeToggle" class="btn btn-outline-secondary mb-2">Switch
-							to Night Mode</button>
-						<a class="nav-link" href="index.jsp">Home</a>
-
-						<!-- Dropdown for Students -->
-						<div class="dropdown mb-2">
-							<button class="btn btn-danger dropdown-toggle" type="button"
-								id="dropdownMenuButton1" data-bs-toggle="dropdown"
-								aria-expanded="false">Students</button>
-							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-								<li><a class="dropdown-item" href="studentform.jsp">Add
-										Student</a></li>
-								<li><a class="dropdown-item" href="GetAllStudentsServlet">View
-										All Students</a></li>
-								<li><a class="dropdown-item" href="EditServlet">Edit
-										Student</a></li>
-								<li><a class="dropdown-item" href="DeleteStudentServlet">Delete
-										Student</a></li>
-							</ul>
-						</div>
-
-						<!-- Dropdown for Courses -->
-						<div class="dropdown mb-2">
-							<button class="btn btn-danger dropdown-toggle" type="button"
-								id="dropdownMenuButton2" data-bs-toggle="dropdown"
-								aria-expanded="false">Courses</button>
-							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-								<li><a class="dropdown-item" href="courseform.jsp">Course
-										Form</a></li>
-								<li><a class="dropdown-item" href="courselist.jsp">Course
-										List</a></li>
-							</ul>
-						</div>
-
-						<!-- Dropdown for Colleges -->
-						<div class="dropdown mb-2">
-							<button class="btn btn-danger dropdown-toggle" type="button"
-								id="dropdownMenuButton3" data-bs-toggle="dropdown"
-								aria-expanded="false">Colleges</button>
-							<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
-								<li><a class="dropdown-item" href="collegeform.jsp">College
-										Form</a></li>
-								<li><a class="dropdown-item" href="listofcolleges.jsp">College
-										List</a></li>
-							</ul>
-						</div>
-					</div>
-				</div>
-			</nav>
-
-			<!-- Main content area using Bootstrap grid -->
-			<main class="col-md-9 col-lg-10 content-area"> <!-- Content will go here -->
-			</main>
+			<!-- Content Area -->
+			<main class="col-md-9 col-lg-10 content-area"></main>
 		</div>
 	</div>
 
 	<!-- Bootstrap 5 JS Bundle -->
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+	<script>
+		function toggleSidebar() {
+			const sidebar = document.getElementById("sidebarMenu");
+			sidebar.classList.toggle("expanded");
+			sidebar.classList.toggle("collapsed");
+		}
+	</script>
 </body>
 </html>

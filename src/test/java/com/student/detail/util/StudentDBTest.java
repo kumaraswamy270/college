@@ -21,7 +21,7 @@ class StudentDBTest {
 
 	@BeforeAll
 	static void setup() {
-		String filePath = "D:\\sample\\Studentdata.csv"; // Update this path as necessary
+		String filePath = "D:\\sample\\Studentdata.csv"; 
 		students = CsvFileLoader.loadStudentData(filePath);
 		studentService = new StudentDBService();
 		for (Student student : students) {
@@ -66,7 +66,7 @@ class StudentDBTest {
 	@Test
 	void testDeleteStudent() {
 		try {
-			Student studentToDelete = studentService.findStudentByRollnumber(81);
+			Student studentToDelete = studentService.findStudentByRollnumber(92);
 			assertNotNull(studentToDelete, "Student with roll number 91 should exist before deletion");
 
 			boolean isDeleted = studentService.deleteStudent(studentToDelete);

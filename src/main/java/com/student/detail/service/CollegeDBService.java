@@ -20,7 +20,7 @@ public class CollegeDBService implements CollegeService {
 				+ college.getCollegeId() + ", '" + college.getCollegeName() + "', '" + college.getAddress() + "', '"
 				+ college.getCity() + "', '" + college.getState() + "', '" + college.getZipcode() + "', '"
 				+ college.getPhoneNumber() + "')";
-		try {
+		try {  
 			con = DBUtil.getConnection();
 			stmt = con.createStatement();
 			int rowsAffected = stmt.executeUpdate(sql);

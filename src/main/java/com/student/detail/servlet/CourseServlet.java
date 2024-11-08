@@ -8,34 +8,32 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
+import com.student.detail.exception.CourseNotFoundException;
 import com.student.detail.model.Course;
 import com.student.detail.service.CourseDBService;
 import com.student.detail.service.CourseService;
 
-/**
- * Servlet implementation class CourseServlet
- */
 @WebServlet("/CourseServlet")
 public class CourseServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	CourseService courseService = new CourseDBService();
 
-	/**
-	 * Default constructor.
-	 */
 	public CourseServlet() {
-		// TODO Auto-generated constructor stub
+		super();
 	}
 
-	/**
-	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// Retrieve parameters from the request
-		String courseId = request.getParameter("courseId");
+
+		// Check if the user is logged in
+		if (!SessionUtils.isSessionValid(request, response)) {
+			return;
+		}
+
+		// Retrieve parameters from request
+		String courseIdStr = request.getParameter("courseId");
 		String courseName = request.getParameter("courseName");
 		String creditsStr = request.getParameter("credits");
 		String department = request.getParameter("department");
@@ -46,14 +44,28 @@ public class CourseServlet extends HttpServlet {
 		String endDateStr = request.getParameter("endDate");
 
 		try {
+			// Convert parameters to appropriate types
+
 			int credits = Integer.parseInt(creditsStr);
 			int duration = Integer.parseInt(durationStr);
 			int lengthOfStudents = Integer.parseInt(lengthOfStudentsStr);
 			LocalDate startDate = LocalDate.parse(startDateStr);
 			LocalDate endDate = LocalDate.parse(endDateStr);
 
+			// Check for duplicate course ID
+			try {
+				if (courseService.findCourseByCode(courseIdStr) != null) {
+					request.setAttribute("databaseError", "Course ID already exists. Please use a different ID.");
+					request.getRequestDispatcher("courseform.jsp").forward(request, response);
+					return;
+				}
+			} catch (CourseNotFoundException e) {
+				System.out.println("No duplicate course ID found. Proceeding with adding the course.");
+			}
+
+			// Create Course object and set properties
 			Course course = new Course();
-			course.setCourseId(courseId);
+			course.setCourseId(courseIdStr);
 			course.setCourseName(courseName);
 			course.setCredits(credits);
 			course.setDepartment(department);
@@ -63,29 +75,24 @@ public class CourseServlet extends HttpServlet {
 			course.setStartDate(startDate);
 			course.setEndDate(endDate);
 
-			courseService.addCourse(course);
-		} catch (NumberFormatException e) {
-			System.err.println("Error: Invalid number format. Check the input values.");
-		} catch (Exception e) {
-			System.err.println("Error adding student: " + e.getMessage());
-		}
-		response.getWriter()
-				.append("CourseId = " + courseId + ", CourseName = " + courseName + ", Credits = " + creditsStr
-						+ ", Department = " + department + ", Duration = " + durationStr + ", FeeStructure = "
-						+ feeStructure + ", NumberOfStudents = " + lengthOfStudentsStr + ", StartDate = " + startDateStr
-						+ ", EndDate = " + endDateStr);
+			// Add the course record
+			if (courseService.addCourse(course) != null) {
+				HttpSession session = request.getSession();
+				session.setAttribute("sessionMessage", "Course submitted successfully!");
+				response.sendRedirect("GetAllCoursesServlet");
+			} else {
+				request.setAttribute("errorMessage", "Error adding course.");
+				request.getRequestDispatcher("courseform.jsp").forward(request, response);
+			}
 
-		// response.sendRedirect("courselist.html");
+		} catch (NumberFormatException e) {
+			request.setAttribute("invalidNumberError", "Invalid number format. Please check your input.");
+			request.getRequestDispatcher("courseform.jsp").forward(request, response);
+		}
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
-
 }

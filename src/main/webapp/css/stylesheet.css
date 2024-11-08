@@ -10,29 +10,37 @@ body {
 header {
 	background-color: #182635;
 	color: white;
-	padding: 1px 1px;
+	width: 100%;
+	padding: 10px 20px; /* Reduced padding */
+	margin: 0;
 	display: flex;
-	align-items: center;
 	justify-content: space-between;
-	max-width: 100%;
-	margin: 0 auto;
+	align-items: center;
+	position: fixed;
+	top: 0;
+	left: 0px;
+	z-index: 1000; /* Ensures the header stays on top of other content */
 }
 
 header h1 {
 	position: absolute;
-	flex-grow: 1;
+	top: 20px; /* Adjust this value to move the heading up or down */
 	left: 50px;
+	right: 100px;
 	text-align: center;
 	margin: 0;
 	font-size: 30px;
-	right: 100px;
+	flex-grow: 1;
 }
+
 /* Container styling */
 .container {
-	padding: 5px;
-	max-width: 1200px;
+	padding-top: 0;
+	padding-bottom: 10px;
+	max-width: 1100px;
 	margin: 0 auto;
 	text-align: center;
+	padding-bottom: 100px;
 }
 
 /* Form styling */
@@ -92,25 +100,52 @@ form .full-width {
 	}
 }
 
+/* Custom styling for Save button */
 #submitButton {
-	padding: 10px;
-	border: none;
-	border-radius: 5px;
-	background-color: #4CAF50;
-	color: white;
-	cursor: pointer;
-	font-size: 16px;
-	transition: background-color 0.3s ease;
+	padding: 6px 15px !important;
+	/* Reduced padding to make the button smaller */
+	border: none !important;
+	border-radius: 5px !important;
+	background-color: #4CAF50 !important; /* Green color */
+	color: white !important;
+	cursor: pointer !important;
+	font-size: 14px !important; /* Smaller font size */
+	transition: background-color 0.3s ease !important;
+	display: inline-block; /* Ensures buttons are inline */
+	text-align: center; /* Center text */
 }
 
+/* Hover effect for Save button */
 #submitButton:hover {
-	background-color: #45a049;
+	background-color: #45a049 !important;
+	/* Slightly darker green on hover */
 }
 
-button#cancelButton {
-	background-color: #f44336;
-	color: white;
-} /* Closing brace added here */
+/* Custom styling for Cancel button */
+#cancelButton {
+	padding: 6px 15px !important;
+	/* Reduced padding to make the button smaller */
+	border: none !important;
+	border-radius: 5px !important;
+	background-color: #f44336 !important; /* Red color */
+	color: white !important;
+	cursor: pointer !important;
+	font-size: 14px !important; /* Smaller font size */
+	transition: background-color 0.3s ease !important;
+	display: inline-block; /* Ensures buttons are inline */
+	text-align: center; /* Center text */
+}
+
+/* Hover effect for Cancel button */
+#cancelButton:hover {
+	background-color: #e53935 !important;
+	/* Slightly darker red on hover */
+}
+
+/* Optional: Adding some padding/margin to the buttons for spacing */
+button {
+	margin-right: 10px; /* Space between the buttons */
+}
 
 /* Error border style */
 .error-border {
@@ -239,7 +274,6 @@ footer p {
 	margin: 0;
 }
 
-/* Logout Button Styles */
 .logout-button {
 	background-color: #e04343; /* Red color */
 	color: white;
@@ -250,17 +284,20 @@ footer p {
 	text-decoration: none;
 	font-size: 16px;
 	position: absolute;
-	right: 20px; /* Adjust as needed */
-	top: 20px; /* Adjust as needed */
+	top: 10px;
+	right: 1px; /* Position it towards the right side */
+	z-index: 1051; /* Make sure it's above the header */
 }
 
+/* Welcome message */
 .welcome-message {
-	color: #e9d7d7; /* Dark color for text */
+	color: #e9d7d7;
 	font-size: 14px;
-	margin-top: 10px; /* Space between the button and message */
+	margin-top: 10px;
 	position: absolute;
-	right: 20px; /* Align with the logout button */
-	top: 60px; /* Adjust to position below the logout button */
+	top: 1px; /* Adjust top margin */
+	right: 120px; /* Position it to the left of the logout button */
+	z-index: 1051; /* Ensure it stays above other content */
 }
 
 .logout-button:hover {
