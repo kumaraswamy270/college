@@ -2,8 +2,8 @@ package com.student.detail.service;
 
 import java.util.List;
 
-import com.student.detail.exception.CollegeNotFoundException;
 import com.student.detail.model.College;
+import com.student.detail.exception.CollegeNotFoundException;
 
 public interface CollegeService {
 
@@ -11,7 +11,7 @@ public interface CollegeService {
 
 	College updateCollege(College college) throws CollegeNotFoundException;
 
-	boolean deleteCollege(College college);
+	boolean deleteCollege(College college) throws CollegeNotFoundException;
 
 	List<College> getAllColleges();
 

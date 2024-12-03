@@ -1,16 +1,21 @@
 package com.student.detail.util;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import com.customer.detail.model.College;
 import com.student.detail.exception.CollegeNotFoundException;
-import com.student.detail.model.College;
 import com.student.detail.service.CollegeDBService;
 import com.student.detail.service.CollegeService;
-import com.student.detail.util.CsvFileLoaderCollege;
-
-import java.util.List;
 
 class CollegeDBTest {
 

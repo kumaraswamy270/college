@@ -24,6 +24,103 @@
 			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5">
+		<attributes>
+			<attribute name="org.eclipse.jst.component.dependency" value="/WEB-INF/lib"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="/student"/>
+	<classpathentry kind="lib" path="C:/Users/kumaraswamy/.m2/repository/jakarta/servlet/jakarta.servlet-api/4.0.4/jakarta.servlet-api-4.0.4.jar" sourcepath="C:/Users/kumaraswamy/.m2/repository/jakarta/servlet/jakarta.servlet-api/4.0.4/jakarta.servlet-api-4.0.4-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="org.eclipse.jst.component.nondependency" value=""/>
+			<attribute name="maven.groupId" value="jakarta.servlet"/>
+			<attribute name="maven.artifactId" value="jakarta.servlet-api"/>
+			<attribute name="maven.version" value="4.0.4"/>
+			<attribute name="maven.scope" value="provided"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path="/DataTypes"/>
+	<classpathentry kind="lib" path="C:/Users/kumaraswamy/.m2/repository/org/springframework/spring-orm/5.3.29/spring-orm-5.3.29.jar" sourcepath="C:/Users/kumaraswamy/.m2/repository/org/springframework/spring-orm/5.3.29/spring-orm-5.3.29-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="org.eclipse.jst.component.archivename" value="spring-orm-5.3.29.jar"/>
+			<attribute name="maven.groupId" value="org.springframework"/>
+			<attribute name="maven.artifactId" value="spring-orm"/>
+			<attribute name="maven.version" value="5.3.29"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/kumaraswamy/.m2/repository/javax/persistence/javax.persistence-api/2.2/javax.persistence-api-2.2.jar" sourcepath="C:/Users/kumaraswamy/.m2/repository/javax/persistence/javax.persistence-api/2.2/javax.persistence-api-2.2-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="org.eclipse.jst.component.archivename" value="javax.persistence-api-2.2.jar"/>
+			<attribute name="maven.groupId" value="javax.persistence"/>
+			<attribute name="maven.artifactId" value="javax.persistence-api"/>
+			<attribute name="maven.version" value="2.2"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/kumaraswamy/.m2/repository/jakarta/activation/jakarta.activation-api/1.2.2/jakarta.activation-api-1.2.2.jar" sourcepath="C:/Users/kumaraswamy/.m2/repository/jakarta/activation/jakarta.activation-api/1.2.2/jakarta.activation-api-1.2.2-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="org.eclipse.jst.component.archivename" value="jakarta.activation-api-1.2.2.jar"/>
+			<attribute name="maven.groupId" value="jakarta.activation"/>
+			<attribute name="maven.artifactId" value="jakarta.activation-api"/>
+			<attribute name="maven.version" value="1.2.2"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/kumaraswamy/.m2/repository/com/sun/activation/jakarta.activation/1.2.2/jakarta.activation-1.2.2.jar" sourcepath="C:/Users/kumaraswamy/.m2/repository/com/sun/activation/jakarta.activation/1.2.2/jakarta.activation-1.2.2-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="test" value="true"/>
+			<attribute name="org.eclipse.jst.component.archivename" value="jakarta.activation-1.2.2.jar"/>
+			<attribute name="maven.groupId" value="com.sun.activation"/>
+			<attribute name="maven.artifactId" value="jakarta.activation"/>
+			<attribute name="maven.version" value="1.2.2"/>
+			<attribute name="maven.scope" value="runtime"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/kumaraswamy/.m2/repository/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0.jar" sourcepath="C:/Users/kumaraswamy/.m2/repository/javax/activation/javax.activation-api/1.2.0/javax.activation-api-1.2.0-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="org.eclipse.jst.component.archivename" value="javax.activation-api-1.2.0.jar"/>
+			<attribute name="maven.groupId" value="javax.activation"/>
+			<attribute name="maven.artifactId" value="javax.activation-api"/>
+			<attribute name="maven.version" value="1.2.0"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/kumaraswamy/.m2/repository/org/springframework/boot/spring-boot-autoconfigure/2.6.10/spring-boot-autoconfigure-2.6.10.jar" sourcepath="C:/Users/kumaraswamy/.m2/repository/org/springframework/boot/spring-boot-autoconfigure/2.6.10/spring-boot-autoconfigure-2.6.10-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="org.eclipse.jst.component.archivename" value="spring-boot-autoconfigure-2.6.10.jar"/>
+			<attribute name="maven.groupId" value="org.springframework.boot"/>
+			<attribute name="maven.artifactId" value="spring-boot-autoconfigure"/>
+			<attribute name="maven.version" value="2.6.10"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/kumaraswamy/.m2/repository/jakarta/annotation/jakarta.annotation-api/1.3.5/jakarta.annotation-api-1.3.5.jar" sourcepath="C:/Users/kumaraswamy/.m2/repository/jakarta/annotation/jakarta.annotation-api/1.3.5/jakarta.annotation-api-1.3.5-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="org.eclipse.jst.component.archivename" value="jakarta.annotation-api-1.3.5.jar"/>
+			<attribute name="maven.groupId" value="jakarta.annotation"/>
+			<attribute name="maven.artifactId" value="jakarta.annotation-api"/>
+			<attribute name="maven.version" value="1.3.5"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="C:/Users/kumaraswamy/.m2/repository/org/apache/tomcat/tomcat-annotations-api/9.0.65/tomcat-annotations-api-9.0.65.jar" sourcepath="C:/Users/kumaraswamy/.m2/repository/org/apache/tomcat/tomcat-annotations-api/9.0.65/tomcat-annotations-api-9.0.65-sources.jar">
+		<attributes>
+			<attribute name="maven.pomderived" value="true"/>
+			<attribute name="org.eclipse.jst.component.archivename" value="tomcat-annotations-api-9.0.65.jar"/>
+			<attribute name="maven.groupId" value="org.apache.tomcat"/>
+			<attribute name="maven.artifactId" value="tomcat-annotations-api"/>
+			<attribute name="maven.version" value="9.0.65"/>
+			<attribute name="maven.scope" value="compile"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

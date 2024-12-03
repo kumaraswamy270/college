@@ -15,7 +15,7 @@
 		</div>
 	</c:if>
 
-	<form id="courseForm" action="CourseServlet" method="POST">
+	<form id="courseForm" action="/course/submit" method="POST">
 		<div class="row mb-3">
 			<div class="col-md-6">
 				<label for="courseId" class="form-label">Course ID</label> <input

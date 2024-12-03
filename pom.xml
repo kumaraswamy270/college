@@ -11,45 +11,126 @@
 	<name>college</name>
 	<url>http://maven.apache.org</url>
 
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.6.10</version> <!-- Spring Boot version compatible with Java 11 -->
+		<relativePath /> <!-- lookup parent from repository -->
+	</parent>
+
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>11</maven.compiler.source>
 		<maven.compiler.target>11</maven.compiler.target>
+		<spring-boot.version>2.6.10</spring-boot.version>
 	</properties>
 
 	<dependencies>
-		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+		<!-- Spring Boot Starter Web -->
 		<dependency>
-			<groupId>mysql</groupId>
-			<artifactId>mysql-connector-java</artifactId>
-			<version>5.1.49</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.apache.taglibs/taglibs-standard-impl -->
+
+		<!-- Spring JDBC Starter -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
+		</dependency>
+
+		<!-- JSP Support -->
+		<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-jasper</artifactId>
+		</dependency>
+
+		<!-- JSTL -->
 		<dependency>
 			<groupId>org.apache.taglibs</groupId>
 			<artifactId>taglibs-standard-impl</artifactId>
 			<version>1.2.5</version>
-			<scope>runtime</scope>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api -->
+
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>4.0.1</version>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>5.6.10.Final</version> <!-- Compatible Hibernate version with Spring Boot 2.6.x -->
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-autoconfigure</artifactId>
+			<version>${spring-boot.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-orm</artifactId>
+			<version>5.3.10</version> <!-- Compatible Spring ORM version with Spring Boot 2.6.x -->
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+
+
+		<dependency>
+			<groupId>jakarta.persistence</groupId> <!-- Update to Jakarta Persistence for JPA -->
+			<artifactId>jakarta.persistence-api</artifactId>
+			<version>3.0.0</version> <!-- JPA 3.0 API version compatible with Spring Boot 2.6.x -->
+		</dependency>
+		<dependency>
+			<groupId>jakarta.transaction</groupId>
+			<artifactId>jakarta.transaction-api</artifactId>
+			<version>2.0.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet.jsp.jstl</groupId>
+			<artifactId>javax.servlet.jsp.jstl-api</artifactId>
+			<version>1.2.1</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>8.0.33</version>
+		</dependency>
+
+		<!-- Jakarta Servlet API -->
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
 			<scope>provided</scope>
+		</dependency>
+
+		<!-- Testing Dependencies -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>
 			<artifactId>junit-jupiter</artifactId>
-			<version>5.9.3</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>5.5.0</version>
 			<scope>test</scope>
 		</dependency>
-
 	</dependencies>
+
+	<build>
+		<plugins>
+			<!-- Spring Boot Maven Plugin -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 </project>

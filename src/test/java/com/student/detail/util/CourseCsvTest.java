@@ -13,7 +13,7 @@ class CourseCsvTest {
     @Test
     void testLoadCourseData() {
         String filePath = "D:\\sample\\Coursedata.csv"; // Adjust the file path as necessary
-        Map<String, Course> courses = CsvFileLodderCourse.loadCourseData(filePath);
+        Map<Integer, Course> courses = CsvFileLodderCourse.loadCourseData(filePath);
 
         // Assert that the courses map is not null and not empty
         assertNotNull(courses, "Courses map should not be null");

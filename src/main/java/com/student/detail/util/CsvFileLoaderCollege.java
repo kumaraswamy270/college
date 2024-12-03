@@ -28,7 +28,7 @@ public class CsvFileLoaderCollege {
 				String address = data[2].trim();
 				String city = data[3].trim();
 				String state = data[4].trim();
-				String zipcode = data[5].trim();
+				int zipcode = Integer.parseInt(data[5].trim());
 				String phoneNumber = data[6].trim();
 
 				College college = new College(collegeId, collegeName, address, city, state, zipcode, phoneNumber);

@@ -4,14 +4,12 @@
 
 <div class="container mt-4">
 	<h2>Edit Student Information</h2>
-
-	<!-- Display error message if exists -->
+	
 	<!-- Display error message if exists -->
 	<div id="errorMessage" class="alert alert-danger" role="alert">
 		<c:out value="${requestScope.errorMessage}" />
 	</div>
-
-	<form id="editStudentForm" action="UpdateServlet" method="post">
+	<form id="editStudentForm" action="/student/update" method="post">
 		<!-- Hidden Field for Student ID -->
 		<input type="hidden" name="id" value="${student.rollnumber}">
 
@@ -169,10 +167,9 @@
 			<!-- Save and Cancel Buttons -->
 			<button id="submitButton" type="submit" class="btn btn-primary">Save</button>
 			<button type="button" id="cancelButton" class="btn btn-secondary"
-				onclick="window.location.href='GetAllStudentsServlet'">Cancel</button>
+				onclick="window.location.href='/student/list'">Cancel</button>
 		</div>
 	</form>
 </div>
 
-<script src="<c:url value='/js/edit.js' />"></script>
 <jsp:include page="footer.jsp" />

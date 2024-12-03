@@ -1,16 +1,27 @@
 package com.student.detail.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity // This annotation marks the class as a Hibernate entity
+@Table(name = "colleges") // This specifies the table name in the database
 public class College {
+	@Id // This annotation marks the primary key
 	private int collegeId;
 	private String collegeName;
 	private String address;
 	private String city;
 	private String state;
-	private String zipcode;
+	private int zipcode;
 	private String phoneNumber;
 
-	// Constructor
-	public College(int collegeId, String collegeName, String address, String city, String state, String zipcode,
+	// Default constructor
+	public College() {
+	}
+
+	// Parameterized constructor
+	public College(int collegeId, String collegeName, String address, String city, String state, int zipcode,
 			String phoneNumber) {
 		this.collegeId = collegeId;
 		this.collegeName = collegeName;
@@ -19,10 +30,6 @@ public class College {
 		this.state = state;
 		this.zipcode = zipcode;
 		this.phoneNumber = phoneNumber;
-	}
-
-	public College() {
-		// TODO Auto-generated constructor stub
 	}
 
 	// Getters and Setters
@@ -66,11 +73,11 @@ public class College {
 		this.state = state;
 	}
 
-	public String getZipcode() {
+	public int getZipcode() {
 		return zipcode;
 	}
 
-	public void setZipcode(String zipcode) {
+	public void setZipcode(int zipcode) {
 		this.zipcode = zipcode;
 	}
 
@@ -82,11 +89,11 @@ public class College {
 		this.phoneNumber = phoneNumber;
 	}
 
-	// toString method
+	// Override toString for better debugging
 	@Override
 	public String toString() {
 		return "College{" + "collegeId=" + collegeId + ", collegeName='" + collegeName + '\'' + ", address='" + address
-				+ '\'' + ", city='" + city + '\'' + ", state='" + state + '\'' + ", zipcode='" + zipcode + '\''
+				+ '\'' + ", city='" + city + '\'' + ", state='" + state + '\'' + ", zipcode=" + zipcode
 				+ ", phoneNumber='" + phoneNumber + '\'' + '}';
 	}
 }

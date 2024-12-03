@@ -9,6 +9,6 @@
 			<p class="welcome-message">
 				Welcome, <strong><%=session.getAttribute("username")%></strong>!
 			</p>
-			<a href="LogOutServlet" class="logout-button">Logout</a>
+			<a href="/logout" class="logout-button">Logout</a>
 		</div>
 	</header>

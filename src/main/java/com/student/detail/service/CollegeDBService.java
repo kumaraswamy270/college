@@ -1,216 +1,256 @@
 package com.student.detail.service;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.List; // Import for List
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
-import com.student.detail.exception.CollegeNotFoundException;
 import com.student.detail.model.College;
-import com.student.detail.util.DBUtil;
+import com.student.detail.exception.CollegeNotFoundException; // Your custom exception
+import com.student.detail.util.HibernateUtil; // HibernateUtil for session management
+import com.student.detail.service.CollegeService; // The service interface you're implementing
 
+@Service
 public class CollegeDBService implements CollegeService {
 
-	public College addCollege(College college) {
-		Connection con = null;
-		Statement stmt = null;
-		String sql = "INSERT INTO colleges (collegeId, collegeName, address, city, state, zipcode, phoneNumber) VALUES ("
-				+ college.getCollegeId() + ", '" + college.getCollegeName() + "', '" + college.getAddress() + "', '"
-				+ college.getCity() + "', '" + college.getState() + "', '" + college.getZipcode() + "', '"
-				+ college.getPhoneNumber() + "')";
-		try {  
-			con = DBUtil.getConnection();
-			stmt = con.createStatement();
-			int rowsAffected = stmt.executeUpdate(sql);
-			if (rowsAffected > 0) {
-				return college;
-			} else {
-				throw new SQLException("Failed to add college");
-			}
+	private static final Logger logger = LoggerFactory.getLogger(CollegeDBService.class);
 
-		} catch (SQLException e) {
-			System.err.println("Error adding college: " + e.getMessage());
-			return null;
+	// Method to add or update college
+	public College addOrUpdateCollege(College college) {
+		Session session = HibernateUtil.getSessionFactory().openSession(); // Get session from SessionFactory
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+			session.saveOrUpdate(college); // Handles both insert and update
+			transaction.commit();
+			logger.info("College {} saved/updated successfully.", college.getCollegeName());
+			return college;
+		} catch (HibernateException e) {
+			if (transaction != null)
+				transaction.rollback();
+			logger.error("Error saving/updating college: {}", e.getMessage());
+			throw e;
 		} finally {
-			DBUtil.closeConnection(null, stmt, con);
+			if (session != null && session.isOpen()) {
+				session.close();
+			}
 		}
 	}
 
+	// Method to delete a college by ID
+	public boolean deleteCollege(int collegeId) throws CollegeNotFoundException {
+		Session session = HibernateUtil.getSessionFactory().openSession(); // Get session from SessionFactory
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+			College college = session.get(College.class, collegeId);
+			if (college == null) {
+				logger.error("College not found with ID: {}", collegeId);
+				throw new CollegeNotFoundException("College not found with ID: " + collegeId);
+			}
+			session.delete(college);
+			transaction.commit();
+			logger.info("College with ID {} deleted successfully.", collegeId);
+			return true;
+		} catch (HibernateException e) {
+			if (transaction != null)
+				transaction.rollback();
+			logger.error("Error deleting college: {}", e.getMessage());
+			throw e;
+		} finally {
+			if (session != null && session.isOpen()) {
+				session.close();
+			}
+		}
+	}
+
+	// Method to find a college by ID
+	public College findCollegeById(int id) throws CollegeNotFoundException {
+		Session session = HibernateUtil.getSessionFactory().openSession(); // Get session from SessionFactory
+		try {
+			College college = session.get(College.class, id);
+			if (college == null) {
+				logger.error("College not found with ID: {}", id);
+				throw new CollegeNotFoundException("College not found with ID: " + id);
+			}
+			return college;
+		} finally {
+			if (session != null && session.isOpen()) {
+				session.close();
+			}
+		}
+	}
+
+	// Method to find a college by name
+	public College findCollegeByName(String name) throws CollegeNotFoundException {
+		Session session = HibernateUtil.getSessionFactory().openSession(); // Get session from SessionFactory
+		try {
+			Query<College> query = session.createQuery("from College where collegeName = :name", College.class);
+			query.setParameter("name", name);
+			College college = query.uniqueResult();
+			if (college == null) {
+				logger.error("College not found with name: {}", name);
+				throw new CollegeNotFoundException("College not found with name: " + name);
+			}
+			return college;
+		} finally {
+			if (session != null && session.isOpen()) {
+				session.close();
+			}
+		}
+	}
+
+	// Method to get all colleges
+	public List<College> getAllColleges() {
+		Session session = null;
+		Transaction transaction = null;
+		try {
+			session = HibernateUtil.getSessionFactory().openSession(); // Get session from SessionFactory
+			if (session == null) {
+				logger.error("Session could not be obtained.");
+				return null;
+			}
+
+			transaction = session.beginTransaction();
+			Query<College> query = session.createQuery("from College", College.class);
+			List<College> colleges = query.list();
+			transaction.commit();
+
+			if (colleges.isEmpty()) {
+				logger.info("No colleges found.");
+			} else {
+				logger.info("Found {} colleges.", colleges.size());
+			}
+			return colleges;
+		} catch (Exception e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			logger.error("Error while fetching colleges", e);
+			throw e;
+		} finally {
+			if (session != null && session.isOpen()) {
+				session.close();
+			}
+		}
+	}
+
+	// Method to find colleges by city
+	public List<College> findCollegesByCity(String city) {
+		Session session = HibernateUtil.getSessionFactory().openSession(); // Get session from SessionFactory
+		try {
+			Query<College> query = session.createQuery("from College where city = :city", College.class);
+			query.setParameter("city", city);
+			return query.list();
+		} finally {
+			if (session != null && session.isOpen()) {
+				session.close();
+			}
+		}
+	}
+
+	// Method to get the count of colleges
+	public int getCountOfColleges() {
+		Session session = HibernateUtil.getSessionFactory().openSession(); // Get session from SessionFactory
+		try {
+			Query<Long> query = session.createQuery("select count(*) from College", Long.class);
+			return query.uniqueResult().intValue();
+		} finally {
+			if (session != null && session.isOpen()) {
+				session.close();
+			}
+		}
+	}
+
+	// Method to add a college
+	@Override
+	public College addCollege(College college) {
+		Session session = HibernateUtil.getSessionFactory().openSession(); // Get session from SessionFactory
+		Transaction transaction = null;
+		try {
+			transaction = session.beginTransaction();
+			session.save(college); // Persist the new college
+			transaction.commit();
+			logger.info("College {} added successfully.", college.getCollegeName());
+			return college;
+		} catch (HibernateException e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			logger.error("Error adding college: {}", e.getMessage());
+			throw e;
+		} finally {
+			if (session != null && session.isOpen()) {
+				session.close();
+			}
+		}
+	}
+
+	// Method to update a college
 	@Override
 	public College updateCollege(College college) throws CollegeNotFoundException {
-		Connection con = null;
-		Statement stmt = null;
-		String sql = "UPDATE colleges SET collegeName = '" + college.getCollegeName() + "', address = '"
-				+ college.getAddress() + "', city = '" + college.getCity() + "', state = '" + college.getState()
-				+ "', zipcode = '" + college.getZipcode() + "', phoneNumber = '" + college.getPhoneNumber()
-				+ "' WHERE collegeId = " + college.getCollegeId();
+		Session session = HibernateUtil.getSessionFactory().openSession(); // Get session from SessionFactory
+		Transaction transaction = null;
 		try {
-			con = DBUtil.getConnection();
-			stmt = con.createStatement();
-			int rowsAffected = stmt.executeUpdate(sql);
-			if (rowsAffected > 0) {
-				return college;
-			} else {
-				throw new CollegeNotFoundException("College with ID " + college.getCollegeId() + " not found");
+			transaction = session.beginTransaction();
+			College existingCollege = session.get(College.class, college.getCollegeId());
+			if (existingCollege == null) {
+				logger.error("College not found with ID: {}", college.getCollegeId());
+				throw new CollegeNotFoundException("College not found with ID: " + college.getCollegeId());
 			}
-
-		} catch (SQLException e) {
-			System.err.println("Error updating college: " + e.getMessage());
-			return null;
+			existingCollege.setCollegeName(college.getCollegeName());
+			existingCollege.setAddress(college.getAddress());
+			existingCollege.setCity(college.getCity());
+			existingCollege.setState(college.getState());
+			existingCollege.setZipcode(college.getZipcode());
+			existingCollege.setPhoneNumber(college.getPhoneNumber());
+			session.update(existingCollege);
+			transaction.commit();
+			logger.info("College {} updated successfully.", college.getCollegeName());
+			return existingCollege;
+		} catch (HibernateException e) {
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			logger.error("Error updating college: {}", e.getMessage());
+			throw e;
 		} finally {
-			DBUtil.closeConnection(null, stmt, con);
+			if (session != null && session.isOpen()) {
+				session.close();
+			}
 		}
 	}
 
+	// Method to delete a college by College object
 	@Override
-	public boolean deleteCollege(College college) {
-		Connection con = null;
-		Statement stmt = null;
-		String sql = "DELETE FROM colleges WHERE collegeId = " + college.getCollegeId();
+	public boolean deleteCollege(College college) throws CollegeNotFoundException {
+		Session session = HibernateUtil.getSessionFactory().openSession(); // Get session from SessionFactory
+		Transaction transaction = null;
 		try {
-			con = DBUtil.getConnection();
-			stmt = con.createStatement();
-			int rowsAffected = stmt.executeUpdate(sql);
-			return rowsAffected > 0;
-
-		} catch (SQLException e) {
-			System.err.println("Error deleting college: " + e.getMessage());
-			return false;
-		} finally {
-			DBUtil.closeConnection(null, stmt, con);
-		}
-	}
-
-	@Override
-	public List<College> getAllColleges() {
-		Connection con = null;
-		Statement stmt = null;
-		ResultSet rs = null;
-		List<College> colleges = new ArrayList<>();
-		String sql = "SELECT * FROM colleges";
-		try {
-			con = DBUtil.getConnection();
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
-
-			while (rs.next()) {
-				College college = new College(rs.getInt("collegeId"), rs.getString("collegeName"),
-						rs.getString("address"), rs.getString("city"), rs.getString("state"), rs.getString("zipcode"),
-						rs.getString("phoneNumber"));
-				colleges.add(college);
+			transaction = session.beginTransaction();
+			College existingCollege = session.get(College.class, college.getCollegeId());
+			if (existingCollege == null) {
+				logger.error("College not found with ID: {}", college.getCollegeId());
+				throw new CollegeNotFoundException("College not found with ID: " + college.getCollegeId());
 			}
-			return colleges;
-
-		} catch (SQLException e) {
-			System.err.println("Error retrieving colleges: " + e.getMessage());
-			return colleges;
-		} finally {
-			DBUtil.closeConnection(rs, stmt, con);
-		}
-	}
-
-	@Override
-	public College findCollegeByName(String name) throws CollegeNotFoundException {
-		Connection con = null;
-		Statement stmt = null;
-		ResultSet rs = null;
-		String sql = "SELECT * FROM colleges WHERE collegeName = '" + name + "'";
-		try {
-			con = DBUtil.getConnection();
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
-			if (rs.next()) {
-				return new College(rs.getInt("collegeId"), rs.getString("collegeName"), rs.getString("address"),
-						rs.getString("city"), rs.getString("state"), rs.getString("zipcode"),
-						rs.getString("phoneNumber"));
-			} else {
-				throw new CollegeNotFoundException("College with name " + name + " not found");
+			session.delete(existingCollege);
+			transaction.commit();
+			logger.info("College {} deleted successfully.", college.getCollegeName());
+			return true;
+		} catch (HibernateException e) {
+			if (transaction != null) {
+				transaction.rollback();
 			}
-
-		} catch (SQLException e) {
-			System.err.println("Error finding college by name: " + e.getMessage());
-			return null;
+			logger.error("Error deleting college: {}", e.getMessage());
+			throw e;
 		} finally {
-			DBUtil.closeConnection(rs, stmt, con);
-		}
-	}
-
-	@Override
-	public College findCollegeById(int id) throws CollegeNotFoundException {
-		Connection con = null;
-		Statement stmt = null;
-		ResultSet rs = null;
-		String sql = "SELECT * FROM colleges WHERE collegeId = " + id;
-		try {
-			con = DBUtil.getConnection();
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
-			if (rs.next()) {
-				return new College(rs.getInt("collegeId"), rs.getString("collegeName"), rs.getString("address"),
-						rs.getString("city"), rs.getString("state"), rs.getString("zipcode"),
-						rs.getString("phoneNumber"));
-			} else {
-				throw new CollegeNotFoundException("College with ID " + id + " not found");
+			if (session != null && session.isOpen()) {
+				session.close();
 			}
-
-		} catch (SQLException e) {
-			System.err.println("Error finding college by ID: " + e.getMessage());
-			return null;
-		} finally {
-			DBUtil.closeConnection(rs, stmt, con);
-		}
-	}
-
-	@Override
-	public List<College> findCollegesByCity(String city) {
-		Connection con = null;
-		Statement stmt = null;
-		ResultSet rs = null;
-		List<College> colleges = new ArrayList<>();
-		String sql = "SELECT * FROM colleges WHERE city = '" + city + "'";
-		try {
-			con = DBUtil.getConnection();
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
-			while (rs.next()) {
-				College college = new College(rs.getInt("collegeId"), rs.getString("collegeName"),
-						rs.getString("address"), rs.getString("city"), rs.getString("state"), rs.getString("zipcode"),
-						rs.getString("phoneNumber"));
-				colleges.add(college);
-			}
-		} catch (SQLException e) {
-			System.err.println("Error finding colleges by city: " + e.getMessage());
-		} finally {
-			DBUtil.closeConnection(rs, stmt, con);
-		}
-
-		return colleges;
-	}
-
-	@Override
-	public int getCountOfColleges() {
-		Connection con = null;
-		Statement stmt = null;
-		ResultSet rs = null;
-		String sql = "SELECT COUNT(*) FROM colleges";
-		try {
-			con = DBUtil.getConnection();
-			stmt = con.createStatement();
-			rs = stmt.executeQuery(sql);
-
-			if (rs.next()) {
-				return rs.getInt(1);
-			} else {
-				throw new SQLException("Failed to count colleges");
-			}
-
-		} catch (SQLException e) {
-			System.err.println("Error counting colleges: " + e.getMessage());
-			return 0;
-		} finally {
-			DBUtil.closeConnection(rs, stmt, con);
 		}
 	}
 }

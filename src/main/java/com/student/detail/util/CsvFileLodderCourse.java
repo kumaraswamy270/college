@@ -15,11 +15,11 @@ public class CsvFileLodderCourse {
 
 	private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 
-	public static Map<String, Course> loadCourseData(String filePath) {
+	public static Map<Integer, Course> loadCourseData(String filePath) {
 
-		Map<String, Course> courses = new HashMap<>();
+		Map<Integer, Course> courses = new HashMap<>();
 		BufferedReader br = null;
-		
+
 		try {
 			File file = new File(filePath);
 			br = new BufferedReader(new FileReader(file));
@@ -78,7 +78,7 @@ public class CsvFileLodderCourse {
 		}
 
 		try {
-			String courseId = data[0].trim();
+			int courseId = Integer.parseInt(data[0].trim());
 			int credits = Integer.parseInt(data[2].trim());
 			String department = data[3].trim();
 			int duration = Integer.parseInt(data[4].trim());

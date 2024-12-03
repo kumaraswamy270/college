@@ -23,7 +23,7 @@
 		</div>
 	</c:if>
 
-	<form id="studentForm" action="StudentServlet" method="POST">
+	<form id="studentForm" action="/student/submit" method="POST">
 		<div class="row mb-3">
 			<div class="col-md-6">
 				<label for="studentCode" class="form-label">Student Code

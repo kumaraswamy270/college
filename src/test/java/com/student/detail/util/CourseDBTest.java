@@ -15,17 +15,18 @@ import com.student.detail.service.CourseService;
 class CourseDBTest {
 
 	private static CourseService courseService;
-	private static Map<String, Course> courses;
+	private static Map<Integer, Course> courses;
 
 	@BeforeAll
 	static void setup() {
 		String filePath = "D:\\sample\\Coursedata.csv"; // Update this path as necessary
-		courses = CsvFileLodderCourse.loadCourseData(filePath);
+		courses = CsvFileLodderCourse.loadCourseData(filePath); // Ensure this method loads data correctly
 		courseService = new CourseDBService();
 
+		// Add courses to the service
 		for (Course course : courses.values()) {
 			try {
-				courseService.addCourse(course);
+				courseService.addCourse(course); // Ensure addCourse method is implemented correctly
 			} catch (Exception e) {
 				System.err.println("Error adding course: " + e.getMessage());
 			}
@@ -35,8 +36,9 @@ class CourseDBTest {
 	@Test
 	void testUpdateCourseDetails() {
 		try {
-			Course courseToUpdate = courseService.findCourseByCode("C119");
-			assertNotNull(courseToUpdate, "Course with code C119 should exist");
+			// Assuming courseId is Integer
+			Course courseToUpdate = courseService.findCourseById(119); // Pass Integer, not String
+			assertNotNull(courseToUpdate, "Course with ID 119 should exist");
 
 			courseToUpdate.setCourseName("Advanced Java Programming");
 			courseToUpdate.setCredits(15);
@@ -53,14 +55,15 @@ class CourseDBTest {
 	@Test
 	void testDeleteCourse() {
 		try {
-			Course courseToDelete = courseService.findCourseByCode("C113");
-			assertNotNull(courseToDelete, "Course with code C113 should exist before deletion");
+			// Assuming courseId is Integer
+			Course courseToDelete = courseService.findCourseById(1); // Pass Integer, not String
+			assertNotNull(courseToDelete, "Course with ID 1 should exist before deletion");
 
 			boolean isDeleted = courseService.deleteCourse(courseToDelete);
 			assertTrue(isDeleted, "Course should be deleted successfully");
 
 			// Verify deletion by attempting to find the course again
-			assertThrows(CourseNotFoundException.class, () -> courseService.findCourseByCode("C113"),
+			assertThrows(CourseNotFoundException.class, () -> courseService.findCourseById(1),
 					"Deleted course should not be found");
 
 		} catch (CourseNotFoundException e) {
@@ -69,13 +72,14 @@ class CourseDBTest {
 	}
 
 	@Test
-	void testFindCourseByCode() {
+	void testFindCourseById() {
 		try {
-			Course foundCourse = courseService.findCourseByCode("C112");
-			assertNotNull(foundCourse, "Course with code C112 should be found");
+			// Assuming courseId is Integer
+			Course foundCourse = courseService.findCourseById(112); // Pass Integer, not String
+			assertNotNull(foundCourse, "Course with ID 112 should be found");
 
 		} catch (CourseNotFoundException e) {
-			fail("Exception occurred while finding course by code: " + e.getMessage());
+			fail("Exception occurred while finding course by ID: " + e.getMessage());
 		}
 	}
 

@@ -28,8 +28,4 @@ public interface StudentService {
 
 	int getCountofStudents();
 
-	int batchProcessStudents(List<Student> students);
-
-	
-
 }

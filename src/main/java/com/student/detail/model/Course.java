@@ -3,7 +3,7 @@ package com.student.detail.model;
 import java.time.LocalDate;
 
 public class Course {
-	private String courseId;
+	private int courseId;
 	private String courseName;
 	private int credits;
 	private String department;
@@ -15,7 +15,7 @@ public class Course {
 
 	// Constructor, getters, and setters
 
-	public Course(String courseId, String courseName, int credits, String department, int duration, String feeStructure,
+	public Course(int courseId, String courseName, int credits, String department, int duration, String feeStructure,
 			int lengthOfStudents, LocalDate startDate, LocalDate endDate) {
 		this.courseId = courseId;
 		this.courseName = courseName;
@@ -29,14 +29,14 @@ public class Course {
 	}
 
 	public Course() {
-		
+
 	}
 
-	public String getCourseId() {
+	public int getCourseId() {
 		return courseId;
 	}
 
-	public void setCourseId(String courseId) {
+	public void setCourseId(int courseId) {
 		this.courseId = courseId;
 	}
 

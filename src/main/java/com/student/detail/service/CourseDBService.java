@@ -1,304 +1,100 @@
 package com.student.detail.service;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Service;
 
 import com.student.detail.exception.CourseNotFoundException;
 import com.student.detail.model.Course;
-import com.student.detail.util.DBUtil;
 
+import java.util.List;
+
+@Service
 public class CourseDBService implements CourseService {
 
+	@Autowired
+	private JdbcTemplate jdbcTemplate;
+
+	private final RowMapper<Course> courseRowMapper = (rs, rowNum) -> new Course(rs.getInt("courseId"),
+			rs.getString("courseName"), rs.getInt("credits"), rs.getString("department"), rs.getInt("duration"),
+			rs.getString("feeStructure"), rs.getInt("lengthOfStudents"), rs.getDate("startDate").toLocalDate(),
+			rs.getDate("endDate").toLocalDate());
+
+	@Override
 	public Course addCourse(Course course) {
-		Connection con = null;
-		PreparedStatement ps = null;
-		String sql = "INSERT INTO courses (courseId, courseName, credits, department, duration, feeStructure, lengthOfStudents, startDate, endDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		try {
-			con = DBUtil.getConnection();
-			ps = con.prepareStatement(sql);
+		String checkSql = "SELECT COUNT(*) FROM courses WHERE courseId = ?";
+		String insertSql = "INSERT INTO courses (courseId, courseName, credits, department, duration, feeStructure, lengthOfStudents, startDate, endDate) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+		String updateSql = "UPDATE courses SET courseName = ?, credits = ?, department = ?, duration = ?, feeStructure = ?, lengthOfStudents = ?, startDate = ?, endDate = ? WHERE courseId = ?";
 
-			ps.setString(1, course.getCourseId());
-			ps.setString(2, course.getCourseName());
-			ps.setInt(3, course.getCredits());
-			ps.setString(4, course.getDepartment());
-			ps.setInt(5, course.getDuration());
-			ps.setString(6, course.getFeeStructure());
-			ps.setInt(7, course.getLengthOfStudents());
-			ps.setDate(8, java.sql.Date.valueOf(course.getStartDate()));
-			ps.setDate(9, java.sql.Date.valueOf(course.getEndDate()));
+		// Check if course already exists
+		int count = jdbcTemplate.queryForObject(checkSql, Integer.class, course.getCourseId());
 
-			int rowsAffected = ps.executeUpdate();
-			if (rowsAffected > 0) {
-				return course;
-			} else {
-				throw new SQLException("Failed to add course");
-			}
-
-		} catch (SQLException e) {
-			System.err.println("Error adding course: " + e.getMessage());
-			return null;
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-				if (con != null)
-					con.close();
-			} catch (SQLException e) {
-				System.err.println("Error closing resources: " + e.getMessage());
-			}
+		if (count > 0) {
+			// Update existing course
+			jdbcTemplate.update(updateSql, course.getCourseName(), course.getCredits(), course.getDepartment(),
+					course.getDuration(), course.getFeeStructure(), course.getLengthOfStudents(),
+					java.sql.Date.valueOf(course.getStartDate()), java.sql.Date.valueOf(course.getEndDate()),
+					course.getCourseId());
+			return course; // Successfully updated
+		} else {
+			// Insert new course
+			jdbcTemplate.update(insertSql, course.getCourseId(), course.getCourseName(), course.getCredits(),
+					course.getDepartment(), course.getDuration(), course.getFeeStructure(),
+					course.getLengthOfStudents(), java.sql.Date.valueOf(course.getStartDate()),
+					java.sql.Date.valueOf(course.getEndDate()));
+			return course; // Successfully inserted
 		}
 	}
 
+	@Override
 	public Course updateCourse(Course course) throws CourseNotFoundException {
-		Connection con = null;
-		PreparedStatement ps = null;
-		String sql = "UPDATE courses SET courseName = ?, credits = ?, department = ?, duration = ?, feeStructure = ?, lengthOfStudents = ?, startDate = ?, endDate = ? WHERE courseId = ?";
-		try {
-			con = DBUtil.getConnection();
-			ps = con.prepareStatement(sql);
-
-			ps.setString(1, course.getCourseName());
-			ps.setInt(2, course.getCredits());
-			ps.setString(3, course.getDepartment());
-			ps.setInt(4, course.getDuration());
-			ps.setString(5, course.getFeeStructure());
-			ps.setInt(6, course.getLengthOfStudents());
-			ps.setDate(7, java.sql.Date.valueOf(course.getStartDate()));
-			ps.setDate(8, java.sql.Date.valueOf(course.getEndDate()));
-			ps.setString(9, course.getCourseId());
-
-			int rowsAffected = ps.executeUpdate();
-			if (rowsAffected > 0) {
-				return course;
-			} else {
-				throw new CourseNotFoundException("Course with ID " + course.getCourseId() + " not found");
-			}
-
-		} catch (SQLException e) {
-			System.err.println("Error updating course: " + e.getMessage());
-			return null;
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-				if (con != null)
-					con.close();
-			} catch (SQLException e) {
-				System.err.println("Error closing resources: " + e.getMessage());
-			}
-		}
+		return addCourse(course); // Uses the same method to add or update course
 	}
 
+	@Override
 	public boolean deleteCourse(Course course) {
-		Connection con = null;
-		PreparedStatement ps = null;
 		String sql = "DELETE FROM courses WHERE courseId = ?";
-		try {
-			con = DBUtil.getConnection();
-			ps = con.prepareStatement(sql);
-
-			ps.setString(1, course.getCourseId());
-
-			int rowsAffected = ps.executeUpdate();
-			return rowsAffected > 0;
-
-		} catch (SQLException e) {
-			System.err.println("Error deleting course: " + e.getMessage());
-			return false;
-		} finally {
-			try {
-				if (ps != null)
-					ps.close();
-				if (con != null)
-					con.close();
-			} catch (SQLException e) {
-				System.err.println("Error closing resources: " + e.getMessage());
-			}
-		}
+		int rowsAffected = jdbcTemplate.update(sql, course.getCourseId());
+		return rowsAffected > 0;
 	}
 
+	@Override
 	public List<Course> getAllCourses() {
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		List<Course> courses = new ArrayList<>();
 		String sql = "SELECT * FROM courses";
-		try {
-			con = DBUtil.getConnection();
-			ps = con.prepareStatement(sql);
-			rs = ps.executeQuery();
-
-			while (rs.next()) {
-				Course course = new Course(rs.getString("courseId"), rs.getString("courseName"), rs.getInt("credits"),
-						rs.getString("department"), rs.getInt("duration"), rs.getString("feeStructure"),
-						rs.getInt("lengthOfStudents"), rs.getDate("startDate").toLocalDate(),
-						rs.getDate("endDate").toLocalDate());
-				courses.add(course);
-			}
-			return courses;
-
-		} catch (SQLException e) {
-			System.err.println("Error retrieving courses: " + e.getMessage());
-			return courses;
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (ps != null)
-					ps.close();
-				if (con != null)
-					con.close();
-			} catch (SQLException e) {
-				System.err.println("Error closing resources: " + e.getMessage());
-			}
-		}
+		return jdbcTemplate.query(sql, courseRowMapper);
 	}
 
 	@Override
 	public Course findCourseByName(String name) throws CourseNotFoundException {
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 		String sql = "SELECT * FROM courses WHERE courseName = ?";
 		try {
-			con = DBUtil.getConnection();
-			ps = con.prepareStatement(sql);
-			ps.setString(1, name);
-			rs = ps.executeQuery();
-			if (rs.next()) {
-				return new Course(rs.getString("courseId"), rs.getString("courseName"), rs.getInt("credits"),
-						rs.getString("department"), rs.getInt("duration"), rs.getString("feeStructure"),
-						rs.getInt("lengthOfStudents"), rs.getDate("startDate").toLocalDate(),
-						rs.getDate("endDate").toLocalDate());
-			} else {
-				throw new CourseNotFoundException("Course with name " + name + " not found");
-			}
-
-		} catch (SQLException e) {
-			System.err.println("Error finding course by name: " + e.getMessage());
-			return null;
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (ps != null)
-					ps.close();
-				if (con != null)
-					con.close();
-			} catch (SQLException e) {
-				System.err.println("Error closing resources: " + e.getMessage());
-			}
+			return jdbcTemplate.queryForObject(sql, courseRowMapper, name);
+		} catch (EmptyResultDataAccessException e) {
+			throw new CourseNotFoundException("Course not found with name: " + name);
 		}
 	}
 
 	@Override
-	public Course findCourseByCode(String code) throws CourseNotFoundException {
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+	public Course findCourseById(int id) throws CourseNotFoundException {
 		String sql = "SELECT * FROM courses WHERE courseId = ?";
 		try {
-			con = DBUtil.getConnection();
-			ps = con.prepareStatement(sql);
-			ps.setString(1, code);
-			rs = ps.executeQuery();
-			if (rs.next()) {
-				return new Course(rs.getString("courseId"), rs.getString("courseName"), rs.getInt("credits"),
-						rs.getString("department"), rs.getInt("duration"), rs.getString("feeStructure"),
-						rs.getInt("lengthOfStudents"), rs.getDate("startDate").toLocalDate(),
-						rs.getDate("endDate").toLocalDate());
-			} else {
-				throw new CourseNotFoundException("Course with ID " + code + " not found");
-			}
-
-		} catch (SQLException e) {
-			System.err.println("Error finding course by code: " + e.getMessage());
-			return null;
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (ps != null)
-					ps.close();
-				if (con != null)
-					con.close();
-			} catch (SQLException e) {
-				System.err.println("Error closing resources: " + e.getMessage());
-			}
+			return jdbcTemplate.queryForObject(sql, courseRowMapper, id);
+		} catch (EmptyResultDataAccessException e) {
+			throw new CourseNotFoundException("Course not found with ID: " + id);
 		}
 	}
 
 	@Override
 	public List<Course> findCoursesByDuration(int duration) {
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		List<Course> courses = new ArrayList<>();
 		String sql = "SELECT * FROM courses WHERE duration = ?";
-		try {
-			con = DBUtil.getConnection();
-			ps = con.prepareStatement(sql);
-			ps.setInt(1, duration);
-			rs = ps.executeQuery();
-			while (rs.next()) {
-				Course course = new Course(rs.getString("courseId"), rs.getString("courseName"), rs.getInt("credits"),
-						rs.getString("department"), rs.getInt("duration"), rs.getString("feeStructure"),
-						rs.getInt("lengthOfStudents"), rs.getDate("startDate").toLocalDate(),
-						rs.getDate("endDate").toLocalDate());
-				courses.add(course);
-			}
-		} catch (SQLException e) {
-			System.err.println("Error finding courses by duration: " + e.getMessage());
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (ps != null)
-					ps.close();
-				if (con != null)
-					con.close();
-			} catch (SQLException e) {
-				System.err.println("Error closing resources: " + e.getMessage());
-			}
-		}
-		return courses;
+		return jdbcTemplate.query(sql, courseRowMapper, duration);
 	}
 
 	@Override
 	public int getCountOfCourses() {
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
 		String sql = "SELECT COUNT(*) FROM courses";
-		try {
-			con = DBUtil.getConnection();
-			ps = con.prepareStatement(sql);
-			rs = ps.executeQuery();
-
-			if (rs.next()) {
-				return rs.getInt(1);
-			} else {
-				throw new SQLException("Failed to count courses");
-			}
-
-		} catch (SQLException e) {
-			System.err.println("Error counting courses: " + e.getMessage());
-			return 0;
-		} finally {
-			try {
-				if (rs != null)
-					rs.close();
-				if (ps != null)
-					ps.close();
-				if (con != null)
-					con.close();
-			} catch (SQLException e) {
-				System.err.println("Error closing resources: " + e.getMessage());
-			}
-		}
+		return jdbcTemplate.queryForObject(sql, Integer.class);
 	}
 }

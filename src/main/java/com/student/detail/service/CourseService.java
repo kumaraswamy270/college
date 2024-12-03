@@ -17,10 +17,9 @@ public interface CourseService {
 
 	Course findCourseByName(String name) throws CourseNotFoundException;
 
-	Course findCourseByCode(String code) throws CourseNotFoundException;
+	Course findCourseById(int courseId) throws CourseNotFoundException;
 
 	List<Course> findCoursesByDuration(int duration);
 
 	int getCountOfCourses();
-
 }

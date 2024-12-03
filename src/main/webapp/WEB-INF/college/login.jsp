@@ -23,15 +23,15 @@
 					class="img-fluid mb-4 mx-auto d-block logo">
 				<h1 class="text-center">Login</h1>
 				<c:choose>
-					<c:when test="${not empty param.sessionexpired}">
+					<c:when test="${not empty sessionexpired}">
 						<div class="alert alert-danger" role="alert">Your session
-							has expired. Please Login again.</div>
+							has expired. Please login again.</div>
 					</c:when>
 					<c:when test="${not empty param.error}">
 						<div class="alert alert-danger" role="alert">Invalid
 							credentials</div>
 					</c:when>
-					<c:when test="${not empty param.logout}">
+					<c:when test="${not empty param.logoutSuccess}">
 						<div class="alert alert-info" role="alert">Logout successful</div>
 					</c:when>
 					<c:when test="${not empty param.loginSuccess}">
@@ -39,8 +39,7 @@
 							successful</div>
 					</c:when>
 				</c:choose>
-				<form id="loginForm" action="LoginServlet" method="POST"
-					class="mt-4">
+				<form id="loginForm" action="/login" method="POST" class="mt-4">
 					<div class="form-group">
 						<label for="username">Username</label> <input type="text"
 							class="form-control" id="username" name="username"> <span

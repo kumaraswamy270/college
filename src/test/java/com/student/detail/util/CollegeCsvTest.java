@@ -3,7 +3,7 @@ package com.student.detail.util;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
 
-import com.student.detail.model.College;
+import com.customer.detail.model.College;
 import com.student.detail.util.CsvFileLoaderCollege;
 
 import java.util.List;

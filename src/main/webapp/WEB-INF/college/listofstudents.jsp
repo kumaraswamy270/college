@@ -149,7 +149,7 @@ table .bg-warning {
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach var="student" items="${studentlist}">
+					<c:forEach var="student" items="${students}">
 						<tr
 							class="<c:choose><c:when test='${student.status == "pass"}'>table-success</c:when><c:otherwise>table-danger</c:otherwise></c:choose>">
 							<td class="align-middle bg-light">${student.studentcode}</td>
@@ -168,15 +168,13 @@ table .bg-warning {
 									<c:otherwise>Fail</c:otherwise>
 								</c:choose></td>
 							<td class="align-middle"><a
-								href="EditServlet?rollnumber=<c:out value='${student.rollnumber}' />">
+								href="/student/edit?rollnumber=<c:out value='${student.rollnumber}' />">
 									<i class="fas fa-edit"></i> Edit
 							</a> | <a
-								href="DeleteStudentServlet?rollnumber=<c:out value='${student.rollnumber}' />"
+								href="/student/deleteStudent?rollnumber=<c:out value='${student.rollnumber}' />"
 								onclick="return confirm('Are you sure you want to delete this student?');">
 									<i class="fas fa-trash-alt"></i> Delete
 							</a></td>
-
-
 						</tr>
 					</c:forEach>
 				</tbody>
