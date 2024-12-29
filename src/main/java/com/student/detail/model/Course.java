@@ -1,21 +1,53 @@
 package com.student.detail.model;
 
+import javax.persistence.*;
 import java.time.LocalDate;
+import java.util.List;
 
+@Entity
+@Table(name = "courses")
 public class Course {
-	private int courseId;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY) // Auto-increment primary key
+	@Column(name = "courseId")
+	private Long courseId;
+
+	@Column(name = "courseName")
 	private String courseName;
+
+	@Column(name = "credits")
 	private int credits;
+
+	@Column(name = "department")
 	private String department;
-	private int duration;
+
+	@Column(name = "duration")
+	private int duration; // Duration in weeks or months, depending on your requirement
+
+	@Column(name = "feeStructure")
 	private String feeStructure;
-	private int lengthOfStudents;
+
+	@Column(name = "lengthOfStudents")
+	private int lengthOfStudents; // Number of students in the course
+
+	@Column(name = "startDate")
 	private LocalDate startDate;
+
+	@Column(name = "endDate")
 	private LocalDate endDate;
 
-	// Constructor, getters, and setters
+	// Many-to-many relationship with College (assuming the 'College' entity exists)
+	@ManyToMany
+	@JoinTable(name = "course_college", joinColumns = @JoinColumn(name = "courseId"), inverseJoinColumns = @JoinColumn(name = "collegeId"))
+	private List<College> colleges;
 
-	public Course(int courseId, String courseName, int credits, String department, int duration, String feeStructure,
+	// Default constructor
+	public Course() {
+	}
+
+	// Constructor with all fields including colleges
+	public Course(Long courseId, String courseName, int credits, String department, int duration, String feeStructure,
 			int lengthOfStudents, LocalDate startDate, LocalDate endDate) {
 		this.courseId = courseId;
 		this.courseName = courseName;
@@ -28,15 +60,12 @@ public class Course {
 		this.endDate = endDate;
 	}
 
-	public Course() {
-
-	}
-
-	public int getCourseId() {
+	// Getters and Setters
+	public Long getCourseId() {
 		return courseId;
 	}
 
-	public void setCourseId(int courseId) {
+	public void setCourseId(Long courseId) {
 		this.courseId = courseId;
 	}
 
@@ -104,11 +133,19 @@ public class Course {
 		this.endDate = endDate;
 	}
 
+	public List<College> getColleges() {
+		return colleges;
+	}
+
+	public void setColleges(List<College> colleges) {
+		this.colleges = colleges;
+	}
+
 	@Override
 	public String toString() {
-		return "Course{" + "courseId='" + courseId + '\'' + ", courseName='" + courseName + '\'' + ", credits="
-				+ credits + ", department='" + department + '\'' + ", duration=" + duration + ", feeStructure='"
-				+ feeStructure + '\'' + ", lengthOfStudents=" + lengthOfStudents + ", startDate=" + startDate
-				+ ", endDate=" + endDate + '}';
+		return "Course{" + "courseId=" + courseId + ", courseName='" + courseName + '\'' + ", credits=" + credits
+				+ ", department='" + department + '\'' + ", duration=" + duration + ", feeStructure='" + feeStructure
+				+ '\'' + ", lengthOfStudents=" + lengthOfStudents + ", startDate=" + startDate + ", endDate=" + endDate
+				+ ", colleges=" + colleges + '}';
 	}
 }

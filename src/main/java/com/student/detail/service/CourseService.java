@@ -11,15 +11,16 @@ public interface CourseService {
 
 	Course updateCourse(Course course) throws CourseNotFoundException;
 
-	boolean deleteCourse(Course course);
+	boolean deleteCourse(Course course) throws CourseNotFoundException;
 
 	List<Course> getAllCourses();
 
-	Course findCourseByName(String name) throws CourseNotFoundException;
+	Course findCourseBycourseName(String courseName) throws CourseNotFoundException;
 
-	Course findCourseById(int courseId) throws CourseNotFoundException;
+	Course findCourseBycourseId(Long courseId) throws CourseNotFoundException;
 
 	List<Course> findCoursesByDuration(int duration);
 
 	int getCountOfCourses();
+
 }

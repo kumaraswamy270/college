@@ -1,125 +1,99 @@
 package com.student.detail.service;
 
-import java.util.List; // Import for List
-import org.hibernate.HibernateException;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-
 import com.student.detail.model.College;
-import com.student.detail.exception.CollegeNotFoundException; // Your custom exception
-import com.student.detail.util.HibernateUtil; // HibernateUtil for session management
-import com.student.detail.service.CollegeService; // The service interface you're implementing
+import com.student.detail.exception.CollegeNotFoundException;
+import com.student.detail.repository.CollegeRepository;
+import com.student.detail.service.CollegeService;
 
 @Service
 public class CollegeDBService implements CollegeService {
 
 	private static final Logger logger = LoggerFactory.getLogger(CollegeDBService.class);
 
-	// Method to add or update college
-	public College addOrUpdateCollege(College college) {
-		Session session = HibernateUtil.getSessionFactory().openSession(); // Get session from SessionFactory
-		Transaction transaction = null;
+	@Autowired
+	private CollegeRepository collegeRepository;
+
+	// Method to add a college
+	@Override
+	public College addCollege(College college) {
 		try {
-			transaction = session.beginTransaction();
-			session.saveOrUpdate(college); // Handles both insert and update
-			transaction.commit();
-			logger.info("College {} saved/updated successfully.", college.getCollegeName());
-			return college;
-		} catch (HibernateException e) {
-			if (transaction != null)
-				transaction.rollback();
-			logger.error("Error saving/updating college: {}", e.getMessage());
+			College savedCollege = collegeRepository.save(college);
+			logger.info("College {} added successfully.", college.getCollegeName());
+			return savedCollege;
+		} catch (Exception e) {
+			logger.error("Error adding college: {}", e.getMessage());
 			throw e;
-		} finally {
-			if (session != null && session.isOpen()) {
-				session.close();
-			}
+		}
+	}
+
+	// Method to update a college
+	@Override
+	public College updateCollege(College college) throws CollegeNotFoundException {
+		if (!collegeRepository.existsById(college.getCollegeId())) {
+			logger.error("College not found with ID: {}", college.getCollegeId());
+			throw new CollegeNotFoundException("College not found with ID: " + college.getCollegeId());
+		}
+		try {
+			College updatedCollege = collegeRepository.save(college);
+			logger.info("College {} updated successfully.", college.getCollegeName());
+			return updatedCollege;
+		} catch (Exception e) {
+			logger.error("Error updating college: {}", e.getMessage());
+			throw e;
 		}
 	}
 
 	// Method to delete a college by ID
-	public boolean deleteCollege(int collegeId) throws CollegeNotFoundException {
-		Session session = HibernateUtil.getSessionFactory().openSession(); // Get session from SessionFactory
-		Transaction transaction = null;
+	@Override
+	public boolean deleteCollege(College college) throws CollegeNotFoundException {
+		// Find the college by ID
+		College existingCollege = collegeRepository.findById(college.getCollegeId()).orElseThrow(
+				() -> new CollegeNotFoundException("College not found with ID: " + college.getCollegeId()));
+
 		try {
-			transaction = session.beginTransaction();
-			College college = session.get(College.class, collegeId);
-			if (college == null) {
-				logger.error("College not found with ID: {}", collegeId);
-				throw new CollegeNotFoundException("College not found with ID: " + collegeId);
-			}
-			session.delete(college);
-			transaction.commit();
-			logger.info("College with ID {} deleted successfully.", collegeId);
-			return true;
-		} catch (HibernateException e) {
-			if (transaction != null)
-				transaction.rollback();
+			// Delete the college
+			collegeRepository.delete(existingCollege);
+			logger.info("College with ID {} deleted successfully.", college.getCollegeId());
+			return true; // Return true if deletion was successful
+		} catch (Exception e) {
 			logger.error("Error deleting college: {}", e.getMessage());
-			throw e;
-		} finally {
-			if (session != null && session.isOpen()) {
-				session.close();
-			}
+			return false; // Return false if an error occurs
 		}
 	}
 
-	// Method to find a college by ID
-	public College findCollegeById(int id) throws CollegeNotFoundException {
-		Session session = HibernateUtil.getSessionFactory().openSession(); // Get session from SessionFactory
-		try {
-			College college = session.get(College.class, id);
-			if (college == null) {
-				logger.error("College not found with ID: {}", id);
-				throw new CollegeNotFoundException("College not found with ID: " + id);
-			}
-			return college;
-		} finally {
-			if (session != null && session.isOpen()) {
-				session.close();
-			}
-		}
+	@Override
+	public College findCollegeBycollegeId(Long id) throws CollegeNotFoundException {
+		return collegeRepository.findById(id)
+				.orElseThrow(() -> new CollegeNotFoundException("College not found with ID: " + id));
 	}
 
 	// Method to find a college by name
-	public College findCollegeByName(String name) throws CollegeNotFoundException {
-		Session session = HibernateUtil.getSessionFactory().openSession(); // Get session from SessionFactory
+	@Override
+	public College findCollegeBycollegeName(String collegeName) throws CollegeNotFoundException {
 		try {
-			Query<College> query = session.createQuery("from College where collegeName = :name", College.class);
-			query.setParameter("name", name);
-			College college = query.uniqueResult();
+			College college = collegeRepository.findCollegeBycollegeName(collegeName); // Assuming you have a custom
+																						// query here
 			if (college == null) {
-				logger.error("College not found with name: {}", name);
-				throw new CollegeNotFoundException("College not found with name: " + name);
+				logger.error("College not found with name: {}", collegeName);
+				throw new CollegeNotFoundException("College not found with name: " + collegeName);
 			}
 			return college;
-		} finally {
-			if (session != null && session.isOpen()) {
-				session.close();
-			}
+		} catch (Exception e) {
+			logger.error("Error finding college by name: {}", e.getMessage());
+			throw e;
 		}
 	}
 
 	// Method to get all colleges
+	@Override
 	public List<College> getAllColleges() {
-		Session session = null;
-		Transaction transaction = null;
 		try {
-			session = HibernateUtil.getSessionFactory().openSession(); // Get session from SessionFactory
-			if (session == null) {
-				logger.error("Session could not be obtained.");
-				return null;
-			}
-
-			transaction = session.beginTransaction();
-			Query<College> query = session.createQuery("from College", College.class);
-			List<College> colleges = query.list();
-			transaction.commit();
-
+			List<College> colleges = collegeRepository.findAll();
 			if (colleges.isEmpty()) {
 				logger.info("No colleges found.");
 			} else {
@@ -127,130 +101,33 @@ public class CollegeDBService implements CollegeService {
 			}
 			return colleges;
 		} catch (Exception e) {
-			if (transaction != null) {
-				transaction.rollback();
-			}
-			logger.error("Error while fetching colleges", e);
+			logger.error("Error fetching colleges: {}", e.getMessage());
 			throw e;
-		} finally {
-			if (session != null && session.isOpen()) {
-				session.close();
-			}
 		}
 	}
 
 	// Method to find colleges by city
+	@Override
 	public List<College> findCollegesByCity(String city) {
-		Session session = HibernateUtil.getSessionFactory().openSession(); // Get session from SessionFactory
 		try {
-			Query<College> query = session.createQuery("from College where city = :city", College.class);
-			query.setParameter("city", city);
-			return query.list();
-		} finally {
-			if (session != null && session.isOpen()) {
-				session.close();
-			}
+			List<College> colleges = collegeRepository.findCollegesByCity(city); // Assuming you have a custom query
+																					// here
+			return colleges;
+		} catch (Exception e) {
+			logger.error("Error fetching colleges by city: {}", e.getMessage());
+			throw e;
 		}
 	}
 
 	// Method to get the count of colleges
+	@Override
 	public int getCountOfColleges() {
-		Session session = HibernateUtil.getSessionFactory().openSession(); // Get session from SessionFactory
 		try {
-			Query<Long> query = session.createQuery("select count(*) from College", Long.class);
-			return query.uniqueResult().intValue();
-		} finally {
-			if (session != null && session.isOpen()) {
-				session.close();
-			}
+			return (int) collegeRepository.count();
+		} catch (Exception e) {
+			logger.error("Error getting count of colleges: {}", e.getMessage());
+			throw e;
 		}
 	}
 
-	// Method to add a college
-	@Override
-	public College addCollege(College college) {
-		Session session = HibernateUtil.getSessionFactory().openSession(); // Get session from SessionFactory
-		Transaction transaction = null;
-		try {
-			transaction = session.beginTransaction();
-			session.save(college); // Persist the new college
-			transaction.commit();
-			logger.info("College {} added successfully.", college.getCollegeName());
-			return college;
-		} catch (HibernateException e) {
-			if (transaction != null) {
-				transaction.rollback();
-			}
-			logger.error("Error adding college: {}", e.getMessage());
-			throw e;
-		} finally {
-			if (session != null && session.isOpen()) {
-				session.close();
-			}
-		}
-	}
-
-	// Method to update a college
-	@Override
-	public College updateCollege(College college) throws CollegeNotFoundException {
-		Session session = HibernateUtil.getSessionFactory().openSession(); // Get session from SessionFactory
-		Transaction transaction = null;
-		try {
-			transaction = session.beginTransaction();
-			College existingCollege = session.get(College.class, college.getCollegeId());
-			if (existingCollege == null) {
-				logger.error("College not found with ID: {}", college.getCollegeId());
-				throw new CollegeNotFoundException("College not found with ID: " + college.getCollegeId());
-			}
-			existingCollege.setCollegeName(college.getCollegeName());
-			existingCollege.setAddress(college.getAddress());
-			existingCollege.setCity(college.getCity());
-			existingCollege.setState(college.getState());
-			existingCollege.setZipcode(college.getZipcode());
-			existingCollege.setPhoneNumber(college.getPhoneNumber());
-			session.update(existingCollege);
-			transaction.commit();
-			logger.info("College {} updated successfully.", college.getCollegeName());
-			return existingCollege;
-		} catch (HibernateException e) {
-			if (transaction != null) {
-				transaction.rollback();
-			}
-			logger.error("Error updating college: {}", e.getMessage());
-			throw e;
-		} finally {
-			if (session != null && session.isOpen()) {
-				session.close();
-			}
-		}
-	}
-
-	// Method to delete a college by College object
-	@Override
-	public boolean deleteCollege(College college) throws CollegeNotFoundException {
-		Session session = HibernateUtil.getSessionFactory().openSession(); // Get session from SessionFactory
-		Transaction transaction = null;
-		try {
-			transaction = session.beginTransaction();
-			College existingCollege = session.get(College.class, college.getCollegeId());
-			if (existingCollege == null) {
-				logger.error("College not found with ID: {}", college.getCollegeId());
-				throw new CollegeNotFoundException("College not found with ID: " + college.getCollegeId());
-			}
-			session.delete(existingCollege);
-			transaction.commit();
-			logger.info("College {} deleted successfully.", college.getCollegeName());
-			return true;
-		} catch (HibernateException e) {
-			if (transaction != null) {
-				transaction.rollback();
-			}
-			logger.error("Error deleting college: {}", e.getMessage());
-			throw e;
-		} finally {
-			if (session != null && session.isOpen()) {
-				session.close();
-			}
-		}
-	}
 }

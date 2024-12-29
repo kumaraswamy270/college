@@ -10,7 +10,6 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = { "com.student.detail", "com.student.detail.service" })
 @EntityScan(basePackages = "com.student.detail")
 public class StudentApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(StudentApplication.class, args);
 	}

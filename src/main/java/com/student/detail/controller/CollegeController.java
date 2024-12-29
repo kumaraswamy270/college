@@ -42,11 +42,11 @@ public class CollegeController {
 		ModelAndView modelAndView = new ModelAndView();
 		try {
 			// Parse form fields
-			int collegeId = Integer.parseInt(collegeIdStr);
+			long collegeId = Long.parseLong(collegeIdStr);
 
 			// Check for duplicate college IDs
 			try {
-				if (collegeService.findCollegeById(collegeId) != null) {
+				if (collegeService.findCollegeBycollegeId(collegeId) != null) {
 					model.addAttribute("databaseError", "College ID already exists.");
 					modelAndView.setViewName("collegeform");
 					return modelAndView;
@@ -87,9 +87,10 @@ public class CollegeController {
 
 	// Show college details for editing (based on college ID)
 	@GetMapping("/edit")
-	public String editCollege(@RequestParam("collegeId") int collegeId, Model model) {
+	public String editCollege(@RequestParam("collegeId") long collegeId, Model model) { // Changed to long to match
+																						// CollegeService
 		try {
-			College college = collegeService.findCollegeById(collegeId);
+			College college = collegeService.findCollegeBycollegeId(collegeId);
 			model.addAttribute("college", college);
 			return "editcollege"; // JSP view to edit the college
 		} catch (CollegeNotFoundException e) {
@@ -115,7 +116,7 @@ public class CollegeController {
 		} else {
 			try {
 				// Trim any spaces before parsing
-				int collegeId = Integer.parseInt(collegeIdStr.trim()); // Throws exception if not a valid integer
+				long collegeId = Long.parseLong(collegeIdStr.trim()); // Throws exception if not a valid integer
 			} catch (NumberFormatException e) {
 				errorMessage.append("College ID must be a number.<br>");
 			}
@@ -172,12 +173,12 @@ public class CollegeController {
 
 		try {
 			// Parse form fields
-			int collegeId = Integer.parseInt(collegeIdStr);
+			long collegeId = Long.parseLong(collegeIdStr);
 			int zipcode = Integer.parseInt(zipcodeStr);
 			// Find the existing college
 			College existingCollege = null;
 			try {
-				existingCollege = collegeService.findCollegeById(collegeId);
+				existingCollege = collegeService.findCollegeBycollegeId(collegeId);
 			} catch (CollegeNotFoundException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -214,10 +215,10 @@ public class CollegeController {
 
 	// Delete a college by college ID
 	@GetMapping("/deleteCollege")
-	public String deleteCollege(@RequestParam("collegeId") int collegeId, HttpSession session,
-			RedirectAttributes redirectAttributes) {
+	public String deleteCollege(@RequestParam("collegeId") long collegeId, HttpSession session,
+			RedirectAttributes redirectAttributes) { // Changed to long to match CollegeService
 		try {
-			College collegeToDelete = collegeService.findCollegeById(collegeId);
+			College collegeToDelete = collegeService.findCollegeBycollegeId(collegeId);
 
 			if (collegeToDelete != null) {
 				boolean isDeleted = collegeService.deleteCollege(collegeToDelete);

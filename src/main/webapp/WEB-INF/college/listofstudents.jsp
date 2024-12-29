@@ -86,6 +86,67 @@ table .bg-light {
 table .bg-warning {
 	background-color: #ffeeba;
 }
+
+.pagination-container {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin: 20px 0;
+}
+
+.pagination {
+	display: flex;
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	gap: 10px;
+}
+
+.pagination .page-item {
+	display: flex;
+}
+
+.pagination .page-link {
+	padding: 10px 15px;
+	color: #007bff;
+	text-decoration: none;
+	border: 1px solid #dee2e6;
+	border-radius: 4px;
+	transition: background-color 0.3s, color 0.3s;
+	font-size: 14px;
+	text-align: center;
+}
+
+.pagination .page-item.active .page-link {
+	background-color: #007bff;
+	color: white;
+	border-color: #007bff;
+}
+
+.pagination .prev-button, .pagination .next-button {
+	background-color: #f8f9fa;
+	color: #007bff;
+	border: 1px solid #dee2e6;
+	border-radius: 4px;
+	padding: 10px 15px;
+	text-align: center;
+	font-size: 14px;
+	text-decoration: none;
+	transition: background-color 0.3s, color 0.3s;
+}
+
+.pagination .prev-button:hover, .pagination .next-button:hover {
+	background-color: #e9ecef;
+	color: #0056b3;
+	border-color: #ced4da;
+}
+
+.pagination .prev-button.disabled, .pagination .next-button.disabled {
+	background-color: #f8f9fa;
+	color: #6c757d;
+	cursor: not-allowed;
+	border-color: #dee2e6;
+}
 </style>
 
 <div class="container">
@@ -145,6 +206,7 @@ table .bg-warning {
 						<th>Date of Birth</th>
 						<th>Address</th>
 						<th>Status</th>
+						<th>Image</th>
 						<th>Actions</th>
 					</tr>
 				</thead>
@@ -167,6 +229,13 @@ table .bg-warning {
 									<c:when test='${student.status == "pass"}'>Pass</c:when>
 									<c:otherwise>Fail</c:otherwise>
 								</c:choose></td>
+							<td><c:if
+									test="${not empty studentImages[student.studentCode]}">
+									<!-- Display the image using Base64 from the map -->
+									<img
+										src="data:image/jpeg;base64,${studentImages[student.studentCode]}"
+										alt="Student Image" width="100" />
+								</c:if></td>
 							<td class="align-middle"><a
 								href="/student/edit?rollnumber=<c:out value='${student.rollnumber}' />">
 									<i class="fas fa-edit"></i> Edit
@@ -179,11 +248,36 @@ table .bg-warning {
 					</c:forEach>
 				</tbody>
 			</table>
+			<div>
+				<div class="pagination-container">
+					<ul class="pagination">
+
+						<!-- Previous Button Logic -->
+						<c:if test="${currentPage > 1}">
+							<li class="page-item"><a class="prev-button"
+								href="/student/page${currentPage - 1}">Previous</a></li>
+						</c:if>
+
+						<!-- Page Number Links -->
+						<c:forEach var="i" begin="1" end="3">
+							<li class="page-item ${i == currentPage ? 'active' : ''}"><a
+								class="page-link" href="/student/page${i}">Page ${i}</a></li>
+						</c:forEach>
+
+						<!-- Next Button Logic -->
+						<c:if test="${currentPage < 3}">
+							<li class="page-item"><a class="next-button"
+								href="/student/page${currentPage + 1}">Next</a></li>
+						</c:if>
+					</ul>
+				</div>
+			</div>
+
 		</div>
 	</div>
 </div>
-
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="<c:url value='/js/search.js' />"></script>
+<script src="<c:url value='/js/paginated.js' />"></script>
 <jsp:include page="footer.jsp" />

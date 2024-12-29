@@ -15,6 +15,7 @@
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-11">
 		<attributes>
+			<attribute name="module" value="true"/>
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
@@ -73,8 +74,8 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/kumaraswamy/.m2/repository/com/sun/activation/jakarta.activation/1.2.2/jakarta.activation-1.2.2.jar" sourcepath="C:/Users/kumaraswamy/.m2/repository/com/sun/activation/jakarta.activation/1.2.2/jakarta.activation-1.2.2-sources.jar">
 		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
 			<attribute name="test" value="true"/>
+			<attribute name="maven.pomderived" value="true"/>
 			<attribute name="org.eclipse.jst.component.archivename" value="jakarta.activation-1.2.2.jar"/>
 			<attribute name="maven.groupId" value="com.sun.activation"/>
 			<attribute name="maven.artifactId" value="jakarta.activation"/>
@@ -122,5 +123,6 @@
 			<attribute name="maven.scope" value="compile"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="D:/softwares/mysql-connector-java-5.1.49.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

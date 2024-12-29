@@ -26,6 +26,7 @@ public interface StudentService {
 
 	List<Student> findStudentByDateofbirthRange(LocalDate startDate, LocalDate endDate);
 
-	int getCountofStudents();
+	List<Student> getPaginatedStudents(int page, int rowsPerPage);
 
+	int getTotalStudents();
 }

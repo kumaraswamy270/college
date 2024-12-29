@@ -15,9 +15,9 @@ public interface CollegeService {
 
 	List<College> getAllColleges();
 
-	College findCollegeByName(String name) throws CollegeNotFoundException;
+	College findCollegeBycollegeName(String collegename) throws CollegeNotFoundException;
 
-	College findCollegeById(int id) throws CollegeNotFoundException;
+	College findCollegeBycollegeId(Long collegeid) throws CollegeNotFoundException;
 
 	List<College> findCollegesByCity(String city);
 

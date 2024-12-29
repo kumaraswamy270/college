@@ -74,12 +74,6 @@
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
 
-
-		<dependency>
-			<groupId>jakarta.persistence</groupId> <!-- Update to Jakarta Persistence for JPA -->
-			<artifactId>jakarta.persistence-api</artifactId>
-			<version>3.0.0</version> <!-- JPA 3.0 API version compatible with Spring Boot 2.6.x -->
-		</dependency>
 		<dependency>
 			<groupId>jakarta.transaction</groupId>
 			<artifactId>jakarta.transaction-api</artifactId>
@@ -92,6 +86,10 @@
 			<version>1.2.1</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
+		</dependency>
 
 		<dependency>
 			<groupId>mysql</groupId>

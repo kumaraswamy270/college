@@ -15,7 +15,7 @@ public class BeanConfig {
 		LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		em.setDataSource(dataSource);
 		em.setJpaVendorAdapter(jpaVendorAdapter);
-		em.setPackagesToScan("com.student.detail.entity");
+		em.setPackagesToScan("com.student.detail.model");
 		return em;
 	}
 }

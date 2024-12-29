@@ -23,7 +23,7 @@ public class CsvFileLoaderCollege {
 				String[] data = line.split(csvSplitBy);
 
 				// Assuming the order of fields in the CSV file matches the College fields
-				int collegeId = Integer.parseInt(data[0].trim());
+				Long collegeId = Long.parseLong(data[0].trim());
 				String collegeName = data[1].trim();
 				String address = data[2].trim();
 				String city = data[3].trim();

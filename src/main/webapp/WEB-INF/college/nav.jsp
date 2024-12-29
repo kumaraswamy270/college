@@ -8,7 +8,7 @@
 			class="fas fa-home"></i><span>Home</span></a> <a class="nav-link"
 			href="<c:url value='/student/form' />"><i
 			class="fas fa-user-plus"></i><span>Add Student</span></a> <a
-			class="nav-link" href="<c:url value='/student/list' />"><i
+			class="nav-link" href="<c:url value='/student/page1' />"><i
 			class="fas fa-users"></i><span>View All Students</span></a> <a
 			class="nav-link" href="<c:url value='/course/form' />"><i
 			class="fas fa-book-medical"></i><span>Add Course</span></a> <a
@@ -17,7 +17,10 @@
 			class="nav-link" href="<c:url value='/college/form' />"><i
 			class="fas fa-school"></i><span>Add College</span></a> <a
 			class="nav-link" href="<c:url value='/college/list' />"><i
-			class="fas fa-university"></i><span>View All Colleges</span></a>
+			class="fas fa-university"></i><span>View All Colleges</span></a> <a
+			class="nav-link" href="<c:url value='/send-gmail/gmail' />"> <i
+			class="fab fa-google gmail-icon"></i><span>Gmail</span>
+		</a>
 	</div>
 </nav>
 

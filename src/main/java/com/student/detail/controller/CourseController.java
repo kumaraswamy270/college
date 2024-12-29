@@ -50,7 +50,7 @@ public class CourseController {
 
 		try {
 			// Parse form fields
-			int courseId = Integer.parseInt(courseIdStr);
+			Long courseId = Long.parseLong(courseIdStr);
 			int credits = Integer.parseInt(creditsStr);
 			int duration = Integer.parseInt(durationStr);
 			int lengthOfStudents = Integer.parseInt(lengthOfStudentsStr);
@@ -59,14 +59,13 @@ public class CourseController {
 
 			// Check for duplicate course codes
 			try {
-				if (courseService.findCourseById(courseId) != null) {
+				if (courseService.findCourseBycourseId(courseId) != null) {
 					model.addAttribute("databaseError", "Course ID already exists.");
 					modelAndView.setViewName("courseform");
 					return modelAndView;
 				}
 			} catch (CourseNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				// Course not found, safe to continue
 			}
 
 			// Create a new Course object
@@ -113,12 +112,12 @@ public class CourseController {
 
 	// Show course details for editing (based on course ID)
 	@GetMapping("/edit")
-	public String editCourse(@RequestParam("courseId") int courseId, Model model) {
+	public String editCourse(@RequestParam("courseId") Long courseId, Model model) {
 		Course course = null; // Initialize the variable here to avoid compilation error
 
 		try {
 			// Fetch the course by course ID
-			course = courseService.findCourseById(courseId);
+			course = courseService.findCourseBycourseId(courseId);
 
 			// Add course details to the model
 			model.addAttribute("course", course);
@@ -208,7 +207,7 @@ public class CourseController {
 			}
 		}
 
-// If there are errors, return to the form with error messages
+		// If there are errors, return to the form with error messages
 		if (errorMessage.length() > 0) {
 			model.addAttribute("errorMessage", errorMessage.toString());
 			model.addAttribute("courseId", courseIdStr);
@@ -226,46 +225,28 @@ public class CourseController {
 		}
 
 		try {
-// Parse form fields
-			int courseid = Integer.parseInt(courseIdStr);
+			// Parse form fields
+			Long courseId = Long.parseLong(courseIdStr);
 			int credits = Integer.parseInt(creditsStr);
 			int duration = Integer.parseInt(durationStr);
 			int lengthOfStudents = Integer.parseInt(lengthOfStudentsStr);
 			LocalDate startDate = LocalDate.parse(startDateStr);
 			LocalDate endDate = LocalDate.parse(endDateStr);
 
-			Course existingStudent = null;
-			try {
-				existingStudent = courseService.findCourseById(courseid);
-			} catch (CourseNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			if (existingStudent == null) {
-				model.addAttribute("errorMessage", "Student not found with roll number: " + courseid);
-				modelAndView.setViewName("courseform");
-				return modelAndView;
-			}
-
-// Create updated course object
-			Course updatedCourse = new Course(courseid, courseName, credits, department, duration, feeStructure,
+			// Create updated course object
+			Course updatedCourse = new Course(courseId, courseName, credits, department, duration, feeStructure,
 					lengthOfStudents, startDate, endDate);
 
-// Update the course
-			try {
-				if (courseService.updateCourse(updatedCourse) != null) {
-					redirectAttributes.addFlashAttribute("successMessage", "Course updated successfully!");
-					modelAndView.setViewName("redirect:/course/list");
-				} else {
-					model.addAttribute("errorMessage", "Error updating course.");
-					modelAndView.setViewName("courseform");
-				}
-			} catch (CourseNotFoundException e) {
-				e.printStackTrace();
+			// Update the course
+			if (courseService.updateCourse(updatedCourse) != null) {
+				redirectAttributes.addFlashAttribute("successMessage", "Course updated successfully!");
+				modelAndView.setViewName("redirect:/course/list");
+			} else {
+				model.addAttribute("errorMessage", "Error updating course.");
+				modelAndView.setViewName("courseform");
 			}
-
-		} catch (NumberFormatException e) {
-			model.addAttribute("invalidNumberError", "Invalid number format. Please check your input.");
+		} catch (CourseNotFoundException e) {
+			model.addAttribute("errorMessage", "Course not found with ID.");
 			modelAndView.setViewName("courseform");
 		}
 
@@ -274,28 +255,16 @@ public class CourseController {
 
 	// Delete a course by course ID
 	@GetMapping("/deleteCourse")
-	public String deleteCourse(@RequestParam("courseId") int courseId, HttpSession session,
-			RedirectAttributes redirectAttributes) {
+	public String deleteCourse(@RequestParam("courseId") Course courseId) {
+		// Delete course logic
 		try {
-			Course courseToDelete = courseService.findCourseById(courseId);
-
-			if (courseToDelete != null) {
-				boolean isDeleted = courseService.deleteCourse(courseToDelete);
-
-				if (isDeleted) {
-					// Add success message to session attributes
-					redirectAttributes.addFlashAttribute("successMessage", "Course deleted successfully.");
-				} else {
-					// Add failure message to session attributes
-					redirectAttributes.addFlashAttribute("errorMessage", "Error deleting course.");
-				}
-			} else {
-				redirectAttributes.addFlashAttribute("errorMessage", "Course not found.");
+			if (courseService.deleteCourse(courseId)) {
+				return "redirect:/course/list";
 			}
 		} catch (CourseNotFoundException e) {
-			redirectAttributes.addFlashAttribute("errorMessage", "Course not found.");
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-
-		return "redirect:/course/list";
+		return "redirect:/course/list?error=Course deletion failed";
 	}
 }

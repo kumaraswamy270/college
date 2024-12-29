@@ -1,23 +1,81 @@
 package com.student.detail.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "students")
 public class Student implements Comparable<Student> {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "studentcode")
 	private int studentcode;
+
+	@Column(name = "rollnumber", nullable = false, unique = true)
 	private int rollnumber;
+
+	@Column(name = "marks", nullable = false)
 	private int marks;
+
+	@Column(name = "branch", nullable = false, length = 50)
 	private String branch;
+
+	@Column(name = "college", nullable = false, length = 100)
 	private String college;
+
+	@Column(name = "firstname", nullable = false, length = 50)
 	private String firstname;
+
+	@Column(name = "lastname", nullable = false, length = 50)
 	private String lastname;
+
+	@Column(name = "fathername", length = 50)
 	private String fathername;
+
+	@Column(name = "mobileno", nullable = false, length = 15)
 	private String mobileno;
+
+	@Column(name = "dateofbirth")
 	private LocalDate dateofbirth;
+
+	@Column(name = "address", length = 255)
 	private String address;
+
+	@Column(name = "status", nullable = false)
 	private boolean status;
+
+	@Lob
+	@Column(name = "image")
 	private byte[] image;
 
-	// Updated constructor with image
+	@ManyToOne
+	@JoinColumn(name = "collegeId")
+	private College collegeEntity;
+
+	// Many-to-Many relationship with Course
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "student_course", joinColumns = @JoinColumn(name = "rollnumber"), inverseJoinColumns = @JoinColumn(name = "courseId"))
+	private List<Course> courses;
+
+	// Constructors
+	public Student() {
+		// Default constructor
+	}
+
 	public Student(int studentcode, int rollnumber, int marks, String branch, String college, String firstname,
 			String lastname, String fathername, String mobileno, LocalDate dateofbirth, String address, boolean status,
 			byte[] image) {
@@ -33,11 +91,7 @@ public class Student implements Comparable<Student> {
 		this.dateofbirth = dateofbirth;
 		this.address = address;
 		this.status = status;
-		this.image = image; // Initialize image field
-	}
-
-	public Student() {
-		// TODO Auto-generated constructor stub
+		this.image = image;
 	}
 
 	// Getters and Setters
@@ -137,14 +191,31 @@ public class Student implements Comparable<Student> {
 		this.status = status;
 	}
 
-	public byte[] getimage() { // Getter for image
+	public byte[] getImage() {
 		return image;
 	}
 
-	public void setimage(byte[] image) { // Setter for image
+	public void setImage(byte[] image) {
 		this.image = image;
 	}
 
+	public College getCollegeEntity() {
+		return collegeEntity;
+	}
+
+	public void setCollegeEntity(College collegeEntity) {
+		this.collegeEntity = collegeEntity;
+	}
+
+	public List<Course> getCourses() {
+		return courses;
+	}
+
+	public void setCourses(List<Course> courses) {
+		this.courses = courses;
+	}
+
+	@Override
 	public int compareTo(Student other) {
 		return this.firstname.compareTo(other.firstname);
 	}
@@ -154,7 +225,8 @@ public class Student implements Comparable<Student> {
 		return "Student [studentcode=" + studentcode + ", rollnumber=" + rollnumber + ", marks=" + marks + ", branch="
 				+ branch + ", college=" + college + ", firstname=" + firstname + ", lastname=" + lastname
 				+ ", fathername=" + fathername + ", mobileno=" + mobileno + ", dateofbirth=" + dateofbirth
-				+ ", address=" + address + ", status=" + status + ", image=" + (image) + "]";
+				+ ", address=" + address + ", status=" + status + ", image=" + (image != null ? "Exists" : "Null")
+				+ ", collegeEntity=" + (collegeEntity != null ? collegeEntity.getCollegeName() : "None") + ", courses="
+				+ (courses != null ? courses.size() : 0) + "]";
 	}
-
 }

@@ -2,6 +2,7 @@ package com.student.detail.controller;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -111,6 +112,30 @@ public class StudentController {
 		}
 		model.addAttribute("students", studentService.getAllStudent());
 		return "listofstudents"; // JSP view for displaying the list
+	}
+
+	@GetMapping("/page1")
+	public String getFirstPage(Model model) {
+		List<Student> students = studentService.getPaginatedStudents(1, 3); // Pass 1 for the first page
+		model.addAttribute("students", students);
+		model.addAttribute("currentPage", 1);
+		return "listofstudents";
+	}
+
+	@GetMapping("/page2")
+	public String getSecondPage(Model model) {
+		List<Student> students = studentService.getPaginatedStudents(2, 3); // Pass 2 for the second page
+		model.addAttribute("students", students);
+		model.addAttribute("currentPage", 2);
+		return "listofstudents";
+	}
+
+	@GetMapping("/page3")
+	public String getThirdPage(Model model) {
+		List<Student> students = studentService.getPaginatedStudents(3, 3); // Pass 3 for the third page
+		model.addAttribute("students", students);
+		model.addAttribute("currentPage", 3);
+		return "listofstudents";
 	}
 
 	// Show student details for editing (based on roll number)
@@ -267,7 +292,7 @@ public class StudentController {
 
 			// Create updated student object
 			Student updatedStudent = new Student(studentcode, rollnumber, marks, branch, college, firstname, lastname,
-					fathername, mobileNo, dateofbirth, address, status, existingStudent.getimage());
+					fathername, mobileNo, dateofbirth, address, status, existingStudent.getImage());
 
 			// Update the student
 			try {

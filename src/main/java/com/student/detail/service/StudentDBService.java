@@ -1,117 +1,197 @@
 package com.student.detail.service;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Service;
-import org.springframework.dao.EmptyResultDataAccessException;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+
 import com.student.detail.exception.StudentNotFoundException1;
 import com.student.detail.model.Student;
-
-import java.time.LocalDate;
-import java.sql.Date;
-import java.util.List;
+import com.student.detail.repository.StudentRepository;
 
 @Service
 public class StudentDBService implements StudentService {
 
+	private static final Logger logger = LoggerFactory.getLogger(StudentDBService.class);
+
 	@Autowired
-	private JdbcTemplate jdbcTemplate;
+	private StudentRepository studentRepository;
 
-	private RowMapper<Student> studentRowMapper = (rs, rowNum) -> new Student(rs.getInt("studentcode"),
-			rs.getInt("rollnumber"), rs.getInt("marks"), rs.getString("branch"), rs.getString("college"),
-			rs.getString("firstname"), rs.getString("lastname"), rs.getString("fathername"), rs.getString("mobileno"),
-			rs.getDate("dateofbirth").toLocalDate(), rs.getString("address"), rs.getBoolean("status"),
-			rs.getBytes("image"));
-
+	// Method to add or update a student
 	@Override
 	public Student addStudent(Student student) {
-		String checkSql = "SELECT COUNT(*) FROM students WHERE rollnumber = ?";
-		String insertSql = "INSERT INTO students (rollnumber, marks, branch, college, firstname, lastname, fathername, mobileno, dateofbirth, address, status, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-		String updateSql = "UPDATE students SET marks = ?, branch = ?, college = ?, firstname = ?, lastname = ?, fathername = ?, mobileno = ?, dateofbirth = ?, address = ?, status = ?, image = ? WHERE rollnumber = ?";
-
-		int count = jdbcTemplate.queryForObject(checkSql, Integer.class, student.getRollnumber());
-
-		if (count > 0) {
-			// Update existing student
-			jdbcTemplate.update(updateSql, student.getMarks(), student.getBranch(), student.getCollege(),
-					student.getFirstname(), student.getLastname(), student.getFathername(), student.getMobileno(),
-					Date.valueOf(student.getDateofbirth()), student.getAddress(), student.isStatus(),
-					student.getimage(), student.getRollnumber());
-			return student; // Successfully updated
-		} else {
-			// Insert new student
-			jdbcTemplate.update(insertSql, student.getRollnumber(), student.getMarks(), student.getBranch(),
-					student.getCollege(), student.getFirstname(), student.getLastname(), student.getFathername(),
-					student.getMobileno(), Date.valueOf(student.getDateofbirth()), student.getAddress(),
-					student.isStatus(), student.getimage());
-			return student; // Successfully inserted
+		try {
+			Student savedStudent = studentRepository.save(student);
+			logger.info("Student with roll number {} added/updated successfully.", student.getRollnumber());
+			return savedStudent;
+		} catch (Exception e) {
+			logger.error("Error adding/updating student: {}", e.getMessage());
+			throw e;
 		}
 	}
 
 	@Override
 	public Student updateStudent(Student student) throws StudentNotFoundException1 {
-		return addStudent(student); // Uses the same method to add or update student
+		if (!studentRepository.existsById(student.getStudentcode())) {
+			logger.error("Student not found with ID: {}", student.getStudentcode());
+			throw new StudentNotFoundException1("Student not found with ID: " + student.getStudentcode());
+		}
+		try {
+			Student updatedStudent = studentRepository.save(student);
+			logger.info("Student with roll number {} updated successfully.", student.getRollnumber());
+			return updatedStudent;
+		} catch (Exception e) {
+			logger.error("Error updating student: {}", e.getMessage());
+			throw e;
+		}
 	}
 
 	@Override
 	public boolean deleteStudent(Student student) {
-		String sql = "DELETE FROM students WHERE rollnumber = ?";
-		int rowsAffected = jdbcTemplate.update(sql, student.getRollnumber());
-		return rowsAffected > 0;
+		if (!studentRepository.existsById(student.getStudentcode())) {
+			logger.warn("No student found with ID: {}", student.getStudentcode());
+			return false;
+		}
+		try {
+			studentRepository.deleteById(student.getStudentcode());
+			logger.info("Student with ID {} deleted successfully.", student.getStudentcode());
+			return true;
+		} catch (Exception e) {
+			logger.error("Error deleting student: {}", e.getMessage());
+			return false;
+		}
 	}
 
 	@Override
 	public List<Student> getAllStudent() {
-		String sql = "SELECT * FROM students";
-		return jdbcTemplate.query(sql, studentRowMapper);
-	}
-
-	@Override
-	public Student findStudentByName(String name) throws StudentNotFoundException1 {
-		String sql = "SELECT * FROM students WHERE firstname = ? OR lastname = ?";
 		try {
-			return jdbcTemplate.queryForObject(sql, studentRowMapper, name, name);
-		} catch (EmptyResultDataAccessException e) {
-			throw new StudentNotFoundException1("Student not found with name: " + name);
+			List<Student> students = studentRepository.findAll();
+			if (students.isEmpty()) {
+				logger.info("No students found in the database.");
+			} else {
+				logger.info("Retrieved {} students from the database.", students.size());
+			}
+			return students;
+		} catch (Exception e) {
+			logger.error("Error fetching students: {}", e.getMessage());
+			throw e;
 		}
 	}
 
 	@Override
 	public Student findStudentByRollnumber(int rollno) throws StudentNotFoundException1 {
-		String sql = "SELECT * FROM students WHERE rollnumber = ?";
 		try {
-			return jdbcTemplate.queryForObject(sql, studentRowMapper, rollno);
-		} catch (EmptyResultDataAccessException e) {
-			throw new StudentNotFoundException1("Student not found with rollnumber: " + rollno);
+			Optional<Student> student = studentRepository.findByRollnumber(rollno);
+			if (student.isEmpty()) {
+				logger.error("Student not found with roll number: {}", rollno);
+				throw new StudentNotFoundException1("Student not found with roll number: " + rollno);
+			}
+			return student.get();
+		} catch (Exception e) {
+			logger.error("Error finding student by roll number: {}", e.getMessage());
+			throw e;
+		}
+	}
+
+	@Override
+	public Student findStudentByName(String name) throws StudentNotFoundException1 {
+		try {
+			Optional<Student> student = studentRepository.findByFirstnameOrLastname(name, name);
+			if (student.isEmpty()) {
+				logger.error("Student not found with name: {}", name);
+				throw new StudentNotFoundException1("Student not found with name: " + name);
+			}
+			return student.get();
+		} catch (Exception e) {
+			logger.error("Error finding student by name: {}", e.getMessage());
+			throw e;
 		}
 	}
 
 	@Override
 	public List<Student> findStudentsByCollege(String college) {
-		String sql = "SELECT * FROM students WHERE college = ?";
-		return jdbcTemplate.query(sql, studentRowMapper, college);
+		try {
+			List<Student> students = studentRepository.findByCollege(college);
+			logger.info("Retrieved {} students from college: {}", students.size(), college);
+			return students;
+		} catch (Exception e) {
+			logger.error("Error finding students by college: {}", e.getMessage());
+			throw e;
+		}
 	}
 
 	@Override
 	public Student findStudentByMobileNumber(String mobile) throws StudentNotFoundException1 {
-		String sql = "SELECT * FROM students WHERE mobileno = ?";
 		try {
-			return jdbcTemplate.queryForObject(sql, studentRowMapper, mobile);
-		} catch (EmptyResultDataAccessException e) {
-			throw new StudentNotFoundException1("Student not found with mobile number: " + mobile);
+			Optional<Student> student = studentRepository.findByMobileno(mobile);
+			if (student.isEmpty()) {
+				logger.error("Student not found with mobile number: {}", mobile);
+				throw new StudentNotFoundException1("Student not found with mobile number: " + mobile);
+			}
+			return student.get();
+		} catch (Exception e) {
+			logger.error("Error finding student by mobile number: {}", e.getMessage());
+			throw e;
 		}
 	}
 
 	@Override
 	public List<Student> findStudentByDateofbirthRange(LocalDate startDate, LocalDate endDate) {
-		String sql = "SELECT * FROM students WHERE dateofbirth BETWEEN ? AND ?";
-		return jdbcTemplate.query(sql, studentRowMapper, Date.valueOf(startDate), Date.valueOf(endDate));
+		try {
+			List<Student> students = studentRepository.findByDateofbirthBetween(startDate, endDate);
+			logger.info("Retrieved {} students born between {} and {}.", students.size(), startDate, endDate);
+			return students;
+		} catch (Exception e) {
+			logger.error("Error finding students by date of birth range: {}", e.getMessage());
+			throw e;
+		}
 	}
 
 	@Override
-	public int getCountofStudents() {
-		String sql = "SELECT COUNT(*) FROM students";
-		return jdbcTemplate.queryForObject(sql, Integer.class);
+	public List<Student> getPaginatedStudents(int page, int rowsPerPage) {
+		try {
+			// Ensure the page number is non-negative, and rowsPerPage is greater than 0
+			if (page <= 0) {
+				page = 1; // Default to the first page if the page is less than or equal to 0
+			}
+			if (rowsPerPage <= 0) {
+				rowsPerPage = 10; // Set a default value for rowsPerPage if invalid
+			}
+			// Page number starts from 0 in PageRequest, so subtract 1 from page to handle
+			// 1-based input
+			PageRequest pageable = PageRequest.of(page - 1, rowsPerPage);
+
+			// Fetch the page of students
+			Page<Student> studentPage = studentRepository.findAll(pageable);
+
+			// Log the page and number of students fetched
+			logger.info("Requested page {} (0-based offset: {}) with {} records per page.", page, page - 1,
+					rowsPerPage);
+			logger.info("Total pages: {}, Total students: {}, Number of students on current page: {}.",
+					studentPage.getTotalPages(), studentPage.getTotalElements(), studentPage.getNumberOfElements());
+
+			return studentPage.getContent(); // Returns the list of students in the current page
+		} catch (Exception e) {
+			logger.error("Error fetching paginated students: {}", e.getMessage(), e);
+			throw new RuntimeException("Error fetching paginated students", e); // Throw a custom exception if necessary
+		}
+	}
+
+	@Override
+	public int getTotalStudents() {
+		try {
+			long totalStudents = studentRepository.count();
+			logger.info("Total number of students: {}", totalStudents);
+			return (int) totalStudents; // Return the count as an integer
+		} catch (Exception e) {
+			logger.error("Error getting total students: {}", e.getMessage());
+			throw e;
+		}
 	}
 }
