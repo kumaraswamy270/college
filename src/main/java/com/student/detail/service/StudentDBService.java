@@ -1,6 +1,7 @@
 package com.student.detail.service;
 
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,6 +77,14 @@ public class StudentDBService implements StudentService {
 				logger.info("No students found in the database.");
 			} else {
 				logger.info("Retrieved {} students from the database.", students.size());
+
+				// Convert image byte[] to Base64 for each student
+				for (Student student : students) {
+					if (student.getImage() != null && student.getImage().length > 0) {
+						String base64Image = Base64.getEncoder().encodeToString(student.getImage());
+						student.setBase64Image(base64Image); // Temporarily set it in a transient field
+					}
+				}
 			}
 			return students;
 		} catch (Exception e) {

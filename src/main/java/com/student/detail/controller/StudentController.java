@@ -1,5 +1,6 @@
 package com.student.detail.controller;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -45,9 +47,12 @@ public class StudentController {
 			@RequestParam("firstname") String firstname, @RequestParam("lastname") String lastname,
 			@RequestParam("fathername") String fathername, @RequestParam("mobileno") String mobileNo,
 			@RequestParam("dateOfBirth") String dateOfBirthStr, @RequestParam("address") String address,
-			@RequestParam("status") String statusStr, Model model, RedirectAttributes redirectAttributes) {
+			@RequestParam("status") String statusStr, @RequestParam("profileImage") MultipartFile imageFile, // Assuming
+																												// upload
+			Model model, RedirectAttributes redirectAttributes) {
 
 		ModelAndView modelAndView = new ModelAndView();
+		byte[] imageBytes = null;
 
 		try {
 			// Parse form fields
@@ -68,11 +73,36 @@ public class StudentController {
 				// No duplicate roll number
 			}
 
-			// Create a new Student object
-			Student student = new Student(studentCode, rollNumber, marks, branch, college, firstname, lastname,
-					fathername, mobileNo, dateOfBirth, address, status, null);
+			// Process image file if it's present
+			if (!imageFile.isEmpty()) {
+				String contentType = imageFile.getContentType();
+				if (!contentType.startsWith("image/")) {
+					model.addAttribute("invalidFileType", "Please upload a valid image.");
+					modelAndView.setViewName("studentform");
+					return modelAndView;
+				}
 
-			// Business validation: Marks should be between 0 and 100
+				// Validate file size (optional)
+				if (imageFile.getSize() > 2 * 1024 * 1024) { // Max file size 2MB
+					model.addAttribute("invalidFileSize", "Image size should be less than 2MB.");
+					modelAndView.setViewName("studentform");
+					return modelAndView;
+				}
+
+				try {
+					imageBytes = imageFile.getBytes();
+				} catch (IOException e) {
+					e.printStackTrace();
+					model.addAttribute("errorMessage", "Error processing image.");
+					modelAndView.setViewName("studentform");
+					return modelAndView;
+				}
+			}
+
+			// Create the Student object before saving to DB
+			Student student = new Student(studentCode, rollNumber, marks, branch, college, firstname, lastname,
+					fathername, mobileNo, dateOfBirth, address, status, imageBytes);
+
 			if (marks < 0 || marks > 100) {
 				model.addAttribute("invalidMarksError", "Marks should be between 0 and 100.");
 				modelAndView.setViewName("studentform");

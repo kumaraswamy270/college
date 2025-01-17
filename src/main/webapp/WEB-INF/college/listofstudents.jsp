@@ -230,11 +230,11 @@ table .bg-warning {
 									<c:otherwise>Fail</c:otherwise>
 								</c:choose></td>
 							<td><c:if
-									test="${not empty studentImages[student.studentCode]}">
+									test="${not empty studentImages[student.rollnumber]}">
 									<!-- Display the image using Base64 from the map -->
 									<img
-										src="data:image/jpeg;base64,${studentImages[student.studentCode]}"
-										alt="Student Image" width="100" />
+										src="data:image/jpeg;base64,${studentImages[student.rollnumber]}"
+										alt="Student Image" width="100" height="100" />
 								</c:if></td>
 							<td class="align-middle"><a
 								href="/student/edit?rollnumber=<c:out value='${student.rollnumber}' />">

@@ -1,6 +1,7 @@
 package com.student.detail.model;
 
 import java.time.LocalDate;
+import java.util.Base64;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -15,6 +16,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "students")
@@ -70,6 +72,9 @@ public class Student implements Comparable<Student> {
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "student_course", joinColumns = @JoinColumn(name = "rollnumber"), inverseJoinColumns = @JoinColumn(name = "courseId"))
 	private List<Course> courses;
+
+	@Transient
+	private String base64Image;
 
 	// Constructors
 	public Student() {
@@ -213,6 +218,17 @@ public class Student implements Comparable<Student> {
 
 	public void setCourses(List<Course> courses) {
 		this.courses = courses;
+	}
+
+	public String getBase64Image() {
+		if (this.image != null) {
+			return Base64.getEncoder().encodeToString(this.image); // Convert byte[] to Base64
+		}
+		return null;
+	}
+
+	public void setBase64Image(String base64Image) {
+		this.base64Image = base64Image;
 	}
 
 	@Override
